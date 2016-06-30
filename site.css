@@ -1,0 +1,209 @@
+﻿body {
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Helvetica Neue','Segoe UI',Helvetica,Verdana,sans-serif;
+}
+
+.form {
+	display: inline-block;
+	padding: 0px 10px 20px;
+	vertical-align: top;
+    border-bottom: 2px solid #e0e0e0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+h2.group-title {
+    border-bottom: 1px solid #e0e0e0;
+    color: #f05b41;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: normal;
+    font-size: 20px;
+    margin: 10px 0;
+    padding-bottom: 10px
+}
+
+h1 {
+    width: 300px;
+    margin: 10px auto 30px;
+    font-weight: 200;
+    font-size: 30px;
+    text-transform:none;
+    color: #f05b41;
+}
+
+#birthday, #types, #without-future, #life-calendar-type {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#birthday {
+    width: 120px !important;
+}
+
+.checkbox {
+    margin: 10px 10px 10px 0;
+}
+
+.label {
+    position: absolute;
+    left: 900px;
+    text-transform: uppercase; 
+    width: 180px;
+    font-weight: bold;
+    margin-top: -8px;
+}
+
+#grid-container {
+    width: 100%;
+    border-bottom: 1px solid #d3d3d3
+}
+
+#apply {
+    display: block;
+    margin-top: 50px;
+}
+
+.life {
+	position: relative;
+	margin: 10px auto;
+	width: 900px;
+	background-color: white;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.week {
+	margin: 3px 0 0 3px;
+	min-width: 14px;
+	min-height: 14px;
+	border: 1px solid #b9b9b9;
+    box-sizing: border-box;
+}
+
+
+.week:nth-child(-5n+50)::before {
+	content: '';
+	position: absolute;
+	top: -17px;
+}
+
+.week:nth-child(260n+1)::before {
+	content: '1';
+	position: absolute;
+	left: -17px;
+	margin-top: -5px;
+}
+
+.week:nth-child(1)::before {
+	content: '0';
+}
+
+.week:nth-child(261)::before {
+	content: '5';
+}
+
+.week:nth-child(521)::before {
+	content: '10';
+}
+
+.week:nth-child(781)::before {
+	content: '15';
+}
+
+.week:nth-child(1041)::before {
+	content: '20';
+}
+
+.week:nth-child(1301)::before {
+	content: '25';
+}
+
+.week:nth-child(1561)::before {
+	content: '30';
+}
+
+.week:nth-child(1821)::before {
+	content: '35';
+}
+
+.week:nth-child(2081)::before {
+	content: '40';
+}
+
+.week:nth-child(2341)::before {
+	content: '45';
+}
+
+.week:nth-child(2601)::before {
+	content: '50';
+}
+
+.week:nth-child(2861)::before {
+	content: '55';
+}
+
+.week:nth-child(3121)::before {
+	content: '60';
+}
+
+.week:nth-child(3381)::before {
+	content: '65';
+}
+
+.week:nth-child(3641)::before {
+	content: '70';
+}
+
+.week:nth-child(3901)::before {
+	content: '75';
+}
+
+.week:nth-child(4161)::before {
+	content: '80';
+}
+
+.week:nth-child(4421)::before {
+	content: '85';
+}
+
+.week:nth-child(5)::before {
+	content: '5';
+}
+
+.week:nth-child(10)::before {
+	content: '10';
+}
+
+.week:nth-child(15)::before {
+	content: '15';
+}
+
+.week:nth-child(20)::before {
+	content: '20';
+}
+
+.week:nth-child(25)::before {
+	content: '25';
+}
+
+.week:nth-child(30)::before {
+	content: '30';
+}
+
+.week:nth-child(35)::before {
+	content: '35';
+}
+
+.week:nth-child(40)::before {
+	content: '40';
+}
+
+.week:nth-child(45)::before {
+	content: '45';
+}
+
+.week:nth-child(50)::before {
+	content: '50';
+}
