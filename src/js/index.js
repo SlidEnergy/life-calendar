@@ -5,141 +5,139 @@ var ROW_COUNT = 90;
 var WEEK_COUNT = COL_COUNT * ROW_COUNT;
 
 var PeriodType = {
-    Basic: 0,
-    Finance: 1,
-    Carrier: 2,
-    Future: 3
+		Basic: 0,
+		Finance: 1,
+		Carrier: 2,
+		Future: 3
 }
 
 var list = [];
 
 $(document).ready(function () {
 
-    Globalize.culture("ru-RU");
+		$('#birthday').dxDateBox({
+				value: new Date(1987, 6, 30),
+				max: new Date(),
+				min: new Date(1900, 0, 1),
+		});
 
-    $('#birthday').dxDateBox({
-        value: new Date(1987, 6, 30),
-        max: new Date(),
-        min: new Date(1900, 0, 1),
-    });
+		var enumsObj = [];
+		for (var prop in PeriodType) {
+				enumsObj.push({ Id: PeriodType[prop], Name: prop })
+		}
 
-    var enumsObj = [];
-    for (var prop in PeriodType) {
-        enumsObj.push({ Id: PeriodType[prop], Name: prop })
-    }
+		for (var i = 0; i < enumsObj.length; i++) {
+				$("<div class='checkbox' id='" + enumsObj[i].Name + "-checkbox'></div>").appendTo('#types').dxCheckBox({
+						value: true,
+						text: enumsObj[i].Name
+				});
+		}
 
-    for (var i = 0; i < enumsObj.length; i++) {
-        $("<div class='checkbox' id='" + enumsObj[i].Name + "-checkbox'></div>").appendTo('#types').dxCheckBox({
-            value: true,
-            text: enumsObj[i].Name
-        });
-    }
+		$('#without-future').dxCheckBox({
+				value: false,
+				text: "Не показывать будущее"
+		});
 
-    $('#without-future').dxCheckBox({
-        value: false,
-        text: "Не показывать будущее"
-    });
+		$("#life-calendar-type").dxRadioGroup({
+				items: ["Неделя", "Месяц"],
+				value: "Неделя",
+				layout: "horizontal"
+		});
 
-    $("#life-calendar-type").dxRadioGroup({
-        items: ["Неделя", "Месяц"],
-        value: "Неделя",
-        layout: "horizontal"
-    });
+		$('#apply').dxButton({
+				text: "Применить",
+				onClick: updateLife
+		});
 
-    $('#apply').dxButton({
-        text: "Применить",
-        onClick: updateLife
-    });
+		loadPeriods();
 
-    loadPeriods();
+		var dataGrid = $("#grid-container").dxDataGrid({
+				dataSource: list,
+				paging: {
+						enabled: false
+				},
+				groupPanel: {
+						visible: true
+				},
+				editing: {
+						mode: "cell",
+						allowUpdating: true,
+						allowDeleting: true,
+						allowAdding: true
+				},
+				onRowUpdated: function () {
+						savePeriods();
+				},
+				onRowRemoved: function () {
+						savePeriods();
+				},
+				onRowInserted: function () {
+						savePeriods();
+				},
+				columns: [{
+						dataField: "start",
+						caption: "Начало",
+						dataType: "date",
+						width: 100
+				},
+				{
+						dataField: "end",
+						caption: "Конец",
+						dataType: "date",
+						width: 100
+				},
+				{
+						dataField: "text",
+						caption: "Название"
+				},
+				{
+						dataField: "color",
+						caption: "Цвет",
+						dataType: "color",
+						width: 130,
+						cellTemplate: function (cellElement, cellInfo) {
+								$(cellElement)
+										.css('background-color', cellInfo.value)
+						},
+						editCellTemplate: function (cellElement, cellInfo) {
+								cellElement.dxColorBox({
+										value: cellInfo.value,
+										onValueChanged: function (e) {
+												cellInfo.setValue(e.value);
+										}
+								});
+						}
+				},
+				{
+						dataField: "type",
+						caption: "Тип",
+						width: 100,
+						groupIndex: 0,
+						showWhenGrouped: true,
+						lookup: {
+								dataSource: enumsObj,
+								displayExpr: "Name",
+								valueExpr: "Id"
+						}
+				}]
+		}).dxDataGrid("instance");
 
-    var dataGrid = $("#grid-container").dxDataGrid({
-        dataSource: list,
-        paging: {
-            enabled: false
-        },
-        groupPanel: {
-            visible: true
-        },
-        editing: {
-            mode: "cell",
-            allowUpdating: true,
-            allowDeleting: true,
-            allowAdding: true
-        },
-        onRowUpdated: function () {
-            savePeriods();
-        },
-        onRowRemoved: function () {
-            savePeriods();
-        },
-        onRowInserted: function () {
-            savePeriods();
-        },
-        columns: [{
-            dataField: "start",
-            caption: "Начало",
-            dataType: "date",
-            width: 100
-        },
-        {
-            dataField: "end",
-            caption: "Конец",
-            dataType: "date",
-            width: 100
-        },
-        {
-            dataField: "text",
-            caption: "Название"
-        },
-        {
-            dataField: "color",
-            caption: "Цвет",
-            dataType: "color",
-            width: 130,
-            cellTemplate: function (cellElement, cellInfo) {
-                $(cellElement)
-                    .css('background-color', cellInfo.value)
-            },
-            editCellTemplate: function (cellElement, cellInfo) {
-                cellElement.dxColorBox({
-                    value: cellInfo.value,
-                    onValueChanged: function (e) {
-                        cellInfo.setValue(e.value);
-                    }
-                });
-            }
-        },
-        {
-            dataField: "type",
-            caption: "Тип",
-            width: 100,
-            groupIndex: 0,
-            showWhenGrouped: true,
-            lookup: {
-                dataSource: enumsObj,
-                displayExpr: "Name",
-                valueExpr: "Id"
-            }
-        }]
-    }).dxDataGrid("instance");
-
-    for (var i = 0; i < WEEK_COUNT; i++)
-        $('.life').append('<div class="week"></div>');
+		for (var i = 0; i < WEEK_COUNT; i++)
+				$('.life').append('<div class="week"></div>');
 });
 
 function add_click() {
-    var startBox = $('#start-period').dxDateBox('instance');
-    var endBox = $('#end-period').dxDateBox('instance');
-    var descriptionBox = $('#description-period').dxTextBox('instance');
-    var colorBox = $('#color-period').dxColorBox('instance');
-    var typeBox = $('#type-period').dxSelectBox('instance');
+		var startBox = $('#start-period').dxDateBox('instance');
+		var endBox = $('#end-period').dxDateBox('instance');
+		var descriptionBox = $('#description-period').dxTextBox('instance');
+		var colorBox = $('#color-period').dxColorBox('instance');
+		var typeBox = $('#type-period').dxSelectBox('instance');
 
-    var start = startBox.option('value');
-    var end = endBox.option('value');
-    var text = descriptionBox.option('value');
-    var color = colorBox.option('value');
-    var type = typeBox.option('value');
+		var start = startBox.option('value');
+		var end = endBox.option('value');
+		var text = descriptionBox.option('value');
+		var color = colorBox.option('value');
+		var type = typeBox.option('value');
 
 	add(start, end, text, color, type);
 
@@ -165,11 +163,11 @@ function remove_click() {
 
 function edit_click() {
 
-    var start = $('#start-period').dxDateBox('instance').option('value');
-    var end = $('#end-period').dxDateBox('instance').option('value');
-    var description = $('#description-period').dxTextBox('instance').option('value');
-    var color = $('#color-period').dxColorBox('instance').option('value');
-    var type = $('#type-period').dxSelectBox('instance').option('value');
+		var start = $('#start-period').dxDateBox('instance').option('value');
+		var end = $('#end-period').dxDateBox('instance').option('value');
+		var description = $('#description-period').dxTextBox('instance').option('value');
+		var color = $('#color-period').dxColorBox('instance').option('value');
+		var type = $('#type-period').dxSelectBox('instance').option('value');
 
 	var selectedText = $("select option:selected").text();
 
@@ -181,66 +179,66 @@ function edit_click() {
 
 function up_click() {
 
-    var selectedText = $("select option:selected").text();
+		var selectedText = $("select option:selected").text();
 
-    var selectedIndex;
+		var selectedIndex;
 
-    $.each(list, function (i, item) {
-        if (PeriodToString(item) == selectedText)
-            selectedIndex = i;
-    });
+		$.each(list, function (i, item) {
+				if (PeriodToString(item) == selectedText)
+						selectedIndex = i;
+		});
 
-    if (selectedIndex - 1 < 0)
-        return;
+		if (selectedIndex - 1 < 0)
+				return;
 
-    var selectedItem;
-    var replacedItem;
+		var selectedItem;
+		var replacedItem;
 
-    replacedItem = list[selectedIndex - 1];
-    selectedItem = list[selectedIndex];
-    list[selectedIndex - 1] = selectedItem;
-    list[selectedIndex] = replacedItem;
+		replacedItem = list[selectedIndex - 1];
+		selectedItem = list[selectedIndex];
+		list[selectedIndex - 1] = selectedItem;
+		list[selectedIndex] = replacedItem;
 
-    updateSelect();
+		updateSelect();
 }
 
 function down_click() {
 
-    var selectedText = $("select option:selected").text();
+		var selectedText = $("select option:selected").text();
 
-    var selectedIndex;
+		var selectedIndex;
 
-    $.each(list, function (i, item) {
-        if (PeriodToString(item) == selectedText)
-            selectedIndex = i;
-    });
+		$.each(list, function (i, item) {
+				if (PeriodToString(item) == selectedText)
+						selectedIndex = i;
+		});
 
-    if (selectedIndex + 1 >= list.length)
-        return;
+		if (selectedIndex + 1 >= list.length)
+				return;
 
-    var selectedItem;
-    var replacedItem;
+		var selectedItem;
+		var replacedItem;
 
-    replacedItem = list[selectedIndex + 1];
-    selectedItem = list[selectedIndex];
-    list[selectedIndex + 1] = selectedItem;
-    list[selectedIndex] = replacedItem;
+		replacedItem = list[selectedIndex + 1];
+		selectedItem = list[selectedIndex];
+		list[selectedIndex + 1] = selectedItem;
+		list[selectedIndex] = replacedItem;
 
-    updateSelect();
+		updateSelect();
 }
 
 function select_change() {
 
-    var selectedText = $("select option:selected").text();
+		var selectedText = $("select option:selected").text();
 
 	$.each(list, function (i, item) {
-	    if (PeriodToString(item) == selectedText)
+			if (PeriodToString(item) == selectedText)
 		{
-		    $('#start-period').dxDateBox('instance').option('value', item.start);
-		    $('#end-period').dxDateBox('instance').option('value', item.end);
-		    $('#description-period').dxTextBox('instance').option('value', item.text);
-		    $('#color-period').dxColorBox('instance').option('value', item.color);
-		    $('#type-period').dxSelectBox('instance').option('value', item.type);
+				$('#start-period').dxDateBox('instance').option('value', item.start);
+				$('#end-period').dxDateBox('instance').option('value', item.end);
+				$('#description-period').dxTextBox('instance').option('value', item.text);
+				$('#color-period').dxColorBox('instance').option('value', item.color);
+				$('#type-period').dxSelectBox('instance').option('value', item.type);
 		}
 	});
 }
@@ -251,7 +249,7 @@ function add(start, end, text, color, type) {
 		end: end,
 		text: text,
 		color: color,
-        type: type
+				type: type
 	});
 }
 
@@ -259,14 +257,14 @@ function remove(text) {
 
 	list = jQuery.grep(list, function (item) {
 
-	    return PeriodToString(item) != text;
+			return PeriodToString(item) != text;
 	});
 }
 
 function edit(start, end, text, color, type, selectedText) {
 
 	$.each(list, function (i, item) {
-	    if (PeriodToString(item) == selectedText)
+			if (PeriodToString(item) == selectedText)
 		{
 			item.start = start;
 			item.end = end;
@@ -283,131 +281,131 @@ function updateSelect() {
 
 	$.each(list, function (i, item) {
 
-	    $('select').append($('<option>', {
-		    text: PeriodToString(item)
+			$('select').append($('<option>', {
+				text: PeriodToString(item)
 		}));
 	});
 }
 
 function updateLife() {
 
-    var selectedPeriodTypes = [];
+		var selectedPeriodTypes = [];
 
-    if ($('#Basic-checkbox').dxCheckBox('instance').option('value'))
-        selectedPeriodTypes.push(PeriodType.Basic);
+		if ($('#Basic-checkbox').dxCheckBox('instance').option('value'))
+				selectedPeriodTypes.push(PeriodType.Basic);
 
-    if ($('#Finance-checkbox').dxCheckBox('instance').option('value'))
-        selectedPeriodTypes.push(PeriodType.Finance);
+		if ($('#Finance-checkbox').dxCheckBox('instance').option('value'))
+				selectedPeriodTypes.push(PeriodType.Finance);
 
-    if ($('#Carrier-checkbox').dxCheckBox('instance').option('value'))
-        selectedPeriodTypes.push(PeriodType.Carrier);
+		if ($('#Carrier-checkbox').dxCheckBox('instance').option('value'))
+				selectedPeriodTypes.push(PeriodType.Carrier);
 
-    if ($('#Future-checkbox').dxCheckBox('instance').option('value'))
-        selectedPeriodTypes.push(PeriodType.Future);
+		if ($('#Future-checkbox').dxCheckBox('instance').option('value'))
+				selectedPeriodTypes.push(PeriodType.Future);
 
-    var withoutFuture = $('#without-future').dxCheckBox('instance').option('value');
+		var withoutFuture = $('#without-future').dxCheckBox('instance').option('value');
 
-    // Очищаем календарь
+		// Очищаем календарь
 
-    $('.week').css('background-color', 'white').css('outline', '2px solid white')
-        .tooltip({ disabled: true });
+		$('.week').css('background-color', 'white').css('outline', '2px solid white')
+				.tooltip({ disabled: true });
 
-    $('.label').remove();
+		$('.label').remove();
 
-    var birthday = $('#birthday').dxDateBox('instance').option('value');
-    var weeksToBirthday = GetWeeksToBirthday(birthday);
-    var weeksToNow = GetWeeksFromBirthdayToDate(new Date(), birthday, weeksToBirthday);
+		var birthday = $('#birthday').dxDateBox('instance').option('value');
+		var weeksToBirthday = GetWeeksToBirthday(birthday);
+		var weeksToNow = GetWeeksFromBirthdayToDate(new Date(), birthday, weeksToBirthday);
 
 	$.each(list, function (i, item) {
 
-	    if (~selectedPeriodTypes.indexOf(item.type)) {
+			if (~selectedPeriodTypes.indexOf(item.type)) {
 
-	        var weeksToStart = GetWeeksFromBirthdayToDate(item.start, birthday, weeksToBirthday);
-	        var weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
+					var weeksToStart = GetWeeksFromBirthdayToDate(item.start, birthday, weeksToBirthday);
+					var weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
 
-            // Не показывать будущее
-	        if (withoutFuture) {
-	            // Не рисуем периоды начинающиеся в будущем.
-	            if (weeksToStart >= weeksToNow)
-	                return;
+						// Не показывать будущее
+					if (withoutFuture) {
+							// Не рисуем периоды начинающиеся в будущем.
+							if (weeksToStart >= weeksToNow)
+									return;
 
-	            // Рисуем периоды заканчивающие в будущем до сегодняшнего дня.
-	            if (weeksToEnd > weeksToNow)
-	                weeksToEnd = weeksToNow;
-	        }
+							// Рисуем периоды заканчивающие в будущем до сегодняшнего дня.
+							if (weeksToEnd > weeksToNow)
+									weeksToEnd = weeksToNow;
+					}
 
-	        $('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
-                .css('background-color', item.color)
-                .tooltip({ items: '.week', content: PeriodToString(item), track: true, disabled: false });
+					$('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
+								.css('background-color', item.color)
+								.tooltip({ items: '.week', content: PeriodToString(item), track: true, disabled: false });
 
-	        // Для базовых периодов заполняем фон за клетками.
+					// Для базовых периодов заполняем фон за клетками.
 
-	        if (item.type == PeriodType.Basic) {
-	            $('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
-                    .css('outline', '2px solid ' + item.color);
-	        }
+					if (item.type == PeriodType.Basic) {
+							$('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
+										.css('outline', '2px solid ' + item.color);
+					}
 
-            // Для базовых периодов добавляем метки с текстом справа
+						// Для базовых периодов добавляем метки с текстом справа
 
-	        if (item.type == PeriodType.Basic) {
-	            var weeksToMiddlePeriod = Math.floor((weeksToStart + weeksToEnd) / 2);
+					if (item.type == PeriodType.Basic) {
+							var weeksToMiddlePeriod = Math.floor((weeksToStart + weeksToEnd) / 2);
 
-	            $('<div class="label">- ' + item.text + '</div>')
-                    .appendTo('.week:nth-child(' + weeksToMiddlePeriod + ')')
-                    .css('color', LightenDarkenColor(item.color, -100));
-	        }
-	    }
+							$('<div class="label">- ' + item.text + '</div>')
+										.appendTo('.week:nth-child(' + weeksToMiddlePeriod + ')')
+										.css('color', LightenDarkenColor(item.color, -100));
+					}
+			}
 	});
 
-    // День рождения
+		// День рождения
 
-    $('.week:nth-child(' + weeksToBirthday + ')')
-    .css('border-color', '#0000ff')
-    .css('border-width', '2px')
-    .tooltip({ items: '.week', content: Globalize.format(birthday, 'dd.MM.yyyy') + ' : День рождения', track: true, disabled: false });
+		$('.week:nth-child(' + weeksToBirthday + ')')
+		.css('border-color', '#0000ff')
+		.css('border-width', '2px')
+		.tooltip({ items: '.week', content: Globalize.format(birthday, 'dd.MM.yyyy') + ' : День рождения', track: true, disabled: false });
 
-    // Сегодня
+		// Сегодня
 
-    $('.week:nth-child(' + weeksToNow + ')')
-        .css('border-color', '#0000ff')
-        .css('border-width', '2px')
-        .tooltip({ items: '.week', content: Globalize.format(new Date(), 'dd.MM.yyyy') + ' : Сегодня', track: true, disabled: false });
+		$('.week:nth-child(' + weeksToNow + ')')
+				.css('border-color', '#0000ff')
+				.css('border-width', '2px')
+				.tooltip({ items: '.week', content: Globalize.format(new Date(), 'dd.MM.yyyy') + ' : Сегодня', track: true, disabled: false });
 }
 
 function GetWeeksFromBirthdayToDate(date, birthday, weeksToBirthday) {
 
-    if (!birthday) {
-        birthday = $('#birthday').dxDateBox('instance').option('value');
-        weeksToBirthday = GetWeeksToBirthday(birthday);
-    }
+		if (!birthday) {
+				birthday = $('#birthday').dxDateBox('instance').option('value');
+				weeksToBirthday = GetWeeksToBirthday(birthday);
+		}
 
-    return Math.floor(Math.abs((date - birthday) / (7 * 24 * 60 * 60 * 1000))) + weeksToBirthday;
+		return Math.floor(Math.abs((date - birthday) / (7 * 24 * 60 * 60 * 1000))) + weeksToBirthday;
 }
 
 function GetWeeksToBirthday(birthday) {
 
-    if (!birthday)
-        birthday = $('#birthday').dxDateBox('instance').option('value');
+		if (!birthday)
+				birthday = $('#birthday').dxDateBox('instance').option('value');
 
-    return Math.floor(Math.abs((birthday - new Date(birthday.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
+		return Math.floor(Math.abs((birthday - new Date(birthday.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
 }
 
 function PeriodToString(period)
 {
-    return Globalize.format(period.start, 'dd.MM.yyyy') + ' - ' + Globalize.format(period.end, 'dd.MM.yyyy') + ' : ' + period.text;
+		return Globalize.format(period.start, 'dd.MM.yyyy') + ' - ' + Globalize.format(period.end, 'dd.MM.yyyy') + ' : ' + period.text;
 }
 
 function loadPeriods() {
 
-    var periods = JSON.parse(localStorage.getItem('Periods'), function(key, value) {
-        if (key == 'start' || key == 'end')
-            return new Date(value);
+		var periods = JSON.parse(localStorage.getItem('Periods'), function(key, value) {
+				if (key == 'start' || key == 'end')
+						return new Date(value);
 
-        return value;
-    });
+				return value;
+		});
 
-    if (periods)
-        list = periods;
+		if (periods)
+				list = periods;
 }
 
 function savePeriods() {
@@ -417,30 +415,30 @@ function savePeriods() {
 
 function LightenDarkenColor(col, amt) {
 
-    var usePound = false;
+		var usePound = false;
 
-    if (col[0] == "#") {
-        col = col.slice(1);
-        usePound = true;
-    }
+		if (col[0] == "#") {
+				col = col.slice(1);
+				usePound = true;
+		}
 
-    var num = parseInt(col, 16);
+		var num = parseInt(col, 16);
 
-    var r = (num >> 16) + amt;
+		var r = (num >> 16) + amt;
 
-    if (r > 255) r = 255;
-    else if (r < 0) r = 0;
+		if (r > 255) r = 255;
+		else if (r < 0) r = 0;
 
-    var b = ((num >> 8) & 0x00FF) + amt;
+		var b = ((num >> 8) & 0x00FF) + amt;
 
-    if (b > 255) b = 255;
-    else if (b < 0) b = 0;
+		if (b > 255) b = 255;
+		else if (b < 0) b = 0;
 
-    var g = (num & 0x0000FF) + amt;
+		var g = (num & 0x0000FF) + amt;
 
-    if (g > 255) g = 255;
-    else if (g < 0) g = 0;
+		if (g > 255) g = 255;
+		else if (g < 0) g = 0;
 
-    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+		return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 
 }

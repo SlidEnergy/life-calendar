@@ -1,68 +1,68 @@
 ﻿body {
-    padding: 0px;
-    margin: 0px;
-    font-family: 'Helvetica Neue','Segoe UI',Helvetica,Verdana,sans-serif;
+	padding: 0px;
+	margin: 0px;
+	font-family: 'Helvetica Neue','Segoe UI',Helvetica,Verdana,sans-serif;
 }
 
 .form {
 	display: inline-block;
 	padding: 0px 10px 20px;
 	vertical-align: top;
-    border-bottom: 2px solid #e0e0e0;
-    width: 100%;
-    box-sizing: border-box;
+	border-bottom: 2px solid #e0e0e0;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 h2.group-title {
-    border-bottom: 1px solid #e0e0e0;
-    color: #f05b41;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: normal;
-    font-size: 20px;
-    margin: 10px 0;
-    padding-bottom: 10px
+	border-bottom: 1px solid #e0e0e0;
+	color: #f05b41;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: normal;
+	font-size: 20px;
+	margin: 10px 0;
+	padding-bottom: 10px
 }
 
 h1 {
-    width: 300px;
-    margin: 10px auto 30px;
-    font-weight: 200;
-    font-size: 30px;
-    text-transform:none;
-    color: #f05b41;
+	width: 300px;
+	margin: 10px auto 30px;
+	font-weight: 200;
+	font-size: 30px;
+	text-transform:none;
+	color: #f05b41;
 }
 
 #birthday, #types, #without-future, #life-calendar-type {
-    display: inline-block;
-    vertical-align: middle;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 #birthday {
-    width: 120px !important;
+	width: 120px !important;
 }
 
 .checkbox {
-    margin: 10px 10px 10px 0;
+	margin: 10px 10px 10px 0;
 }
 
 .label {
-    position: absolute;
-    left: 900px;
-    text-transform: uppercase; 
-    width: 180px;
-    font-weight: bold;
-    margin-top: -8px;
+	position: absolute;
+	left: 900px;
+	text-transform: uppercase; 
+	width: 180px;
+	font-weight: bold;
+	margin-top: -8px;
 }
 
 #grid-container {
-    width: 100%;
-    border-bottom: 1px solid #d3d3d3
+	width: 100%;
+	border-bottom: 1px solid #d3d3d3
 }
 
 #apply {
-    display: block;
-    margin-top: 50px;
+	display: block;
+	margin-top: 50px;
 }
 
 .life {
@@ -79,7 +79,7 @@ h1 {
 	min-width: 14px;
 	min-height: 14px;
 	border: 1px solid #b9b9b9;
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 
