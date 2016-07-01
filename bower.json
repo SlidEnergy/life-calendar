@@ -1,0 +1,23 @@
+{
+  "name": "life-calendar",
+  "homepage": "https://github.com/SlidEnergy/life-calendar",
+  "authors": [
+    "slidenergy@gmail.com"
+  ],
+  "description": "You life in weeks",
+  "main": "",
+  "keywords": [
+    "life",
+    "calendar",
+    "week"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
