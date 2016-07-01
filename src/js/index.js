@@ -15,6 +15,8 @@ var list = [];
 
 $(document).ready(function () {
 
+		Globalize("ru-RU");
+		
 		$('#birthday').dxDateBox({
 				value: new Date(1987, 6, 30),
 				max: new Date(),
