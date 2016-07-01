@@ -321,7 +321,12 @@ function updateLife() {
 			if (~selectedPeriodTypes.indexOf(item.type)) {
 
 					var weeksToStart = GetWeeksFromBirthdayToDate(item.start, birthday, weeksToBirthday);
-					var weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
+					var weeksToEnd;
+
+					if(item.end === undefined)
+						weeksToEnd = weeksToNow;
+					else
+						weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
 
 						// Не показывать будущее
 					if (withoutFuture) {
