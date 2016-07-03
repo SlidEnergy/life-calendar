@@ -22,6 +22,8 @@
   ],
   "dependencies": {
     "devextreme-web": "^16.1.4",
-    "jquery-ui": "^1.11.4"
+    "jquery-ui": "^1.11.4",
+    "angular": "~1.4.1",
+    "angular-sanitize": "~1.4.1"
   }
 }
