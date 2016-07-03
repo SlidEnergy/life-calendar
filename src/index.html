@@ -15,16 +15,83 @@
 
 	<link href="css/site.css" rel="stylesheet" />
 </head>
-<body>
+<body ng-app='calendar' ng-controller='calendarCtrl'>
 	<div class="form">
 		<h2 class="group-title">Жизненные периоды</h2>
-		<div id="grid-container"></div>
+		<div id="grid-container" dx-data-grid="{
+		dataSource: list,
+		paging: { enabled: false },
+		groupPanel: { visible: true },
+		editing: {
+				mode: 'cell',
+				allowUpdating: true,
+				allowDeleting: true,
+				allowAdding: true
+		},
+		onRowUpdated: savePeriods(),
+		onRowRemoved: savePeriods(),
+		onRowInserted: savePeriods(),
+		columns: [{
+				dataField: 'start',
+				caption: 'Начало',
+				dataType: 'date',
+				width: 100
+		},
+		{
+				dataField: 'end',
+				caption: 'Конец',
+				dataType: 'date',
+				width: 100
+		},
+		{
+				dataField: 'text',
+				caption: 'Название'
+		},
+		{
+				dataField: 'color',
+				caption: 'Цвет',
+				dataType: 'color',
+				width: 130,
+				cellTemplate: cellTemplate,
+				editCellTemplate: editCellTemplate
+		},
+		{
+				dataField: 'type',
+				caption: 'Тип',
+				width: 100,
+				groupIndex: 0,
+				showWhenGrouped: true,
+				lookup: {
+						dataSource: periodTypeItems,
+						displayExpr: 'name',
+						valueExpr: 'id'
+				}
+		}]}"></div>
 		<h2 class="group-title">Настройки отображения</h2>
-		<div id="birthday"></div>
-		<div id="types"></div>
-		<div id="without-future"></div>
-		<div id="life-calendar-type"></div>
-		<div id="apply"></div>
+		<div id="birthday" dx-date-box="{
+			value: birthday,
+			max: birthdayMax,
+			min: birthdayMin
+		}"></div>
+		<div id="types" ng-repeat="type in periodTypeItems">
+			<div class="checkbox" id="{type.name + 'checkbox'}" dx-check-box="{
+				value: true,
+				text: type.name
+			}"></div>
+		</div>
+		<div id="without-future" dx-check-box="{
+			value: withoutFuture,
+			text: 'Не показывать будущее'
+		}"></div>
+		<div id="life-calendar-type" dx-radio-group="{
+			items: lifeCalendarTypeItems,
+			value: lifeCalendarType,
+			layout: 'horizontal'
+		}"></div>
+		<div id="apply" dx-button="{
+			text: 'Применить',
+			onClick: updateLife
+		}"></div>
 	</div>
 	<h1>Календарь жизни</h1>
 	<div class="life">
@@ -33,8 +100,8 @@
 	<script src="vendor/jquery.min.js"></script>
 
 	<script src="vendor/cldr.js"></script>
-    <script src="vendor/cldr/event.js"></script>
-    <script src="vendor/cldr/supplemental.js"></script>
+	<script src="vendor/cldr/event.js"></script>
+	<script src="vendor/cldr/supplemental.js"></script>
 
 	<script src="vendor/globalize.js"></script>
 	<script src="vendor/globalize/message.js"></script>
