@@ -14,13 +14,12 @@ var PeriodType = {
 var list = [];
 
 $.when(
-		$.get("vendor/cldr/supplemental/likelySubtags.json"),
 		$.get("vendor/cldr/main/ru/numbers.json"),
-		$.get("vendor/cldr/main/ru/currencies.json"),
+		$.get("vendor/cldr/main/ru/timeZoneNames.json"),
 		$.get("vendor/cldr/main/ru/ca-gregorian.json"),
+		$.get("vendor/cldr/supplemental/likelySubtags.json"),	
 		$.get("vendor/cldr/supplemental/timeData.json"),
 		$.get("vendor/cldr/supplemental/weekData.json"),
-		$.get("vendor/cldr/supplemental/currencyData.json"),
 		$.get("vendor/cldr/supplemental/numberingSystems.json")
 ).then(function(){
 		//The following code converts the got results into an array
