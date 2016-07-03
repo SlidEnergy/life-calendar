@@ -22,6 +22,9 @@
   ],
   "dependencies": {
     "devextreme-web": "^16.1.4",
-    "jquery-ui": "^1.11.4"
+    "jquery-ui": "^1.11.4",
+    "cldr-dates-modern": "^29.0.0",
+    "cldr-numbers-modern": "^29.0.0",
+    "cldr-core": "^29.0.0"
   }
 }

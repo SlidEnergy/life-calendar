@@ -13,133 +13,152 @@ var PeriodType = {
 
 var list = [];
 
-$(document).ready(function () {
+$.when(
+		$.get("vendor/cldr/supplemental/likelySubtags.json"),
+		$.get("vendor/cldr/main/ru/numbers.json"),
+		$.get("vendor/cldr/main/ru/currencies.json"),
+		$.get("vendor/cldr/main/ru/ca-gregorian.json"),
+		$.get("vendor/cldr/supplemental/timeData.json"),
+		$.get("vendor/cldr/supplemental/weekData.json"),
+		$.get("vendor/cldr/supplemental/currencyData.json"),
+		$.get("vendor/cldr/supplemental/numberingSystems.json")
+).then(function(){
+		//The following code converts the got results into an array
+		return [].slice.apply( arguments, [0] ).map(function( result ) {
+				return result[ 0 ];
+		});
+}).then(
+		Globalize.load //loads data held in each array item to Globalize
+).then(function(){
 
-		Globalize("ru-RU");
+	//initialize your application here
+
+	Globalize.locale(navigator.language || navigator.browserLanguage);
 		
-		$('#birthday').dxDateBox({
-				value: new Date(1987, 6, 30),
-				max: new Date(),
-				min: new Date(1900, 0, 1),
-		});
+	$('#birthday').dxDateBox({
+			value: new Date(1987, 6, 30),
+			max: new Date(),
+			min: new Date(1900, 0, 1),
+	});
 
-		var enumsObj = [];
-		for (var prop in PeriodType) {
-				enumsObj.push({ Id: PeriodType[prop], Name: prop })
-		}
+	var enumsObj = [];
+	for (var prop in PeriodType) {
+			enumsObj.push({ Id: PeriodType[prop], Name: prop })
+	}
 
-		for (var i = 0; i < enumsObj.length; i++) {
-				$("<div class='checkbox' id='" + enumsObj[i].Name + "-checkbox'></div>").appendTo('#types').dxCheckBox({
-						value: true,
-						text: enumsObj[i].Name
-				});
-		}
+	for (var i = 0; i < enumsObj.length; i++) {
+			$("<div class='checkbox' id='" + enumsObj[i].Name + "-checkbox'></div>").appendTo('#types').dxCheckBox({
+					value: true,
+					text: enumsObj[i].Name
+			});
+	}
 
-		$('#without-future').dxCheckBox({
-				value: false,
-				text: "Не показывать будущее"
-		});
+	$('#without-future').dxCheckBox({
+			value: false,
+			text: "Не показывать будущее"
+	});
 
-		$("#life-calendar-type").dxRadioGroup({
-				items: ["Неделя", "Месяц"],
-				value: "Неделя",
-				layout: "horizontal"
-		});
+	$("#life-calendar-type").dxRadioGroup({
+			items: ["Неделя", "Месяц"],
+			value: "Неделя",
+			layout: "horizontal"
+	});
 
-		$('#apply').dxButton({
-				text: "Применить",
-				onClick: updateLife
-		});
+	$('#apply').dxButton({
+			text: "Применить",
+			onClick: updateLife
+	});
 
-		loadPeriods();
+	loadPeriods();
 
-		var dataGrid = $("#grid-container").dxDataGrid({
-				dataSource: list,
-				paging: {
-						enabled: false
-				},
-				groupPanel: {
-						visible: true
-				},
-				editing: {
-						mode: "cell",
-						allowUpdating: true,
-						allowDeleting: true,
-						allowAdding: true
-				},
-				onRowUpdated: function () {
-						savePeriods();
-				},
-				onRowRemoved: function () {
-						savePeriods();
-				},
-				onRowInserted: function () {
-						savePeriods();
-				},
-				columns: [{
-						dataField: "start",
-						caption: "Начало",
-						dataType: "date",
-						width: 100
-				},
-				{
-						dataField: "end",
-						caption: "Конец",
-						dataType: "date",
-						width: 100
-				},
-				{
-						dataField: "text",
-						caption: "Название"
-				},
-				{
-						dataField: "color",
-						caption: "Цвет",
-						dataType: "color",
-						width: 130,
-						cellTemplate: function (cellElement, cellInfo) {
-								$(cellElement)
-										.css('background-color', cellInfo.value)
-						},
-						editCellTemplate: function (cellElement, cellInfo) {
-								cellElement.dxColorBox({
-										value: cellInfo.value,
-										onValueChanged: function (e) {
-												cellInfo.setValue(e.value);
-										}
-								});
-						}
-				},
-				{
-						dataField: "type",
-						caption: "Тип",
-						width: 100,
-						groupIndex: 0,
-						showWhenGrouped: true,
-						lookup: {
-								dataSource: enumsObj,
-								displayExpr: "Name",
-								valueExpr: "Id"
-						}
-				}]
-		}).dxDataGrid("instance");
+	var dataGrid = $("#grid-container").dxDataGrid({
+			dataSource: list,
+			paging: {
+					enabled: false
+			},
+			groupPanel: {
+					visible: true
+			},
+			editing: {
+					mode: "cell",
+					allowUpdating: true,
+					allowDeleting: true,
+					allowAdding: true
+			},
+			onRowUpdated: function () {
+					savePeriods();
+			},
+			onRowRemoved: function () {
+					savePeriods();
+			},
+			onRowInserted: function () {
+					savePeriods();
+			},
+			columns: [{
+					dataField: "start",
+					caption: "Начало",
+					dataType: "date",
+					width: 100
+			},
+			{
+					dataField: "end",
+					caption: "Конец",
+					dataType: "date",
+					width: 100
+			},
+			{
+					dataField: "text",
+					caption: "Название"
+			},
+			{
+					dataField: "color",
+					caption: "Цвет",
+					dataType: "color",
+					width: 130,
+					cellTemplate: function (cellElement, cellInfo) {
+							$(cellElement)
+									.css('background-color', cellInfo.value)
+					},
+					editCellTemplate: function (cellElement, cellInfo) {
+							cellElement.dxColorBox({
+									value: cellInfo.value,
+									onValueChanged: function (e) {
+											cellInfo.setValue(e.value);
+									}
+							});
+					}
+			},
+			{
+					dataField: "type",
+					caption: "Тип",
+					width: 100,
+					groupIndex: 0,
+					showWhenGrouped: true,
+					lookup: {
+							dataSource: enumsObj,
+							displayExpr: "Name",
+							valueExpr: "Id"
+					}
+			}]
+	}).dxDataGrid("instance");
 
-		for (var i = 0; i < WEEK_COUNT; i++)
-				$('.life').append('<div class="week"></div>');
+	for (var i = 0; i < WEEK_COUNT; i++)
+			$('.life').append('<div class="week"></div>');
 });
 
 function add_click() {
-		var startBox = $('#start-period').dxDateBox('instance');
-		var endBox = $('#end-period').dxDateBox('instance');
-		var descriptionBox = $('#description-period').dxTextBox('instance');
-		var colorBox = $('#color-period').dxColorBox('instance');
-		var typeBox = $('#type-period').dxSelectBox('instance');
 
-		var start = startBox.option('value');
-		var end = endBox.option('value');
-		var text = descriptionBox.option('value');
-		var color = colorBox.option('value');
-		var type = typeBox.option('value');
+	var startBox = $('#start-period').dxDateBox('instance');
+	var endBox = $('#end-period').dxDateBox('instance');
+	var descriptionBox = $('#description-period').dxTextBox('instance');
+	var colorBox = $('#color-period').dxColorBox('instance');
+	var typeBox = $('#type-period').dxSelectBox('instance');
+
+	var start = startBox.option('value');
+	var end = endBox.option('value');
+	var text = descriptionBox.option('value');
+	var color = colorBox.option('value');
+	var type = typeBox.option('value');
 
 	add(start, end, text, color, type);
 
@@ -369,14 +388,14 @@ function updateLife() {
 		$('.week:nth-child(' + weeksToBirthday + ')')
 		.css('border-color', '#0000ff')
 		.css('border-width', '2px')
-		.tooltip({ items: '.week', content: Globalize.format(birthday, 'dd.MM.yyyy') + ' : День рождения', track: true, disabled: false });
+		.tooltip({ items: '.week', content: Globalize.dateFormatter()(birthday) + ' : День рождения', track: true, disabled: false });
 
-		// Сегодня
+		// СегодняdateFormatter
 
 		$('.week:nth-child(' + weeksToNow + ')')
 				.css('border-color', '#0000ff')
 				.css('border-width', '2px')
-				.tooltip({ items: '.week', content: Globalize.format(new Date(), 'dd.MM.yyyy') + ' : Сегодня', track: true, disabled: false });
+				.tooltip({ items: '.week', content: Globalize.dateFormatter()(new Date()) + ' : Сегодня', track: true, disabled: false });
 }
 
 function GetWeeksFromBirthdayToDate(date, birthday, weeksToBirthday) {
@@ -399,7 +418,10 @@ function GetWeeksToBirthday(birthday) {
 
 function PeriodToString(period)
 {
-		return Globalize.format(period.start, 'dd.MM.yyyy') + ' - ' + Globalize.format(period.end, 'dd.MM.yyyy') + ' : ' + period.text;
+	var end = period.end;
+	if (end === undefined)
+		end = new Date();
+		return Globalize.dateFormatter()(period.start) + ' - ' + Globalize.dateFormatter()(end) + ' : ' + period.text;
 }
 
 function loadPeriods() {
