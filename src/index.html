@@ -19,54 +19,56 @@
 	<div class="form">
 		<h2 class="group-title">Жизненные периоды</h2>
 		<div id="grid-container" dx-data-grid="{
-		dataSource: list,
-		paging: { enabled: false },
-		groupPanel: { visible: true },
-		editing: {
-				mode: 'cell',
-				allowUpdating: true,
-				allowDeleting: true,
-				allowAdding: true
-		},
-		onRowUpdated: savePeriods(),
-		onRowRemoved: savePeriods(),
-		onRowInserted: savePeriods(),
-		columns: [{
+			dataSource: list,
+			paging: { enabled: false },
+			groupPanel: { visible: true },
+			editing: {
+					mode: 'cell',
+					allowUpdating: true,
+					allowDeleting: true,
+					allowAdding: true
+			},
+			onRowUpdated: savePeriods(),
+			onRowRemoved: savePeriods(),
+			onRowInserted: savePeriods(),
+			columns: [{
 				dataField: 'start',
 				caption: 'Начало',
 				dataType: 'date',
 				width: 100
-		},
-		{
-				dataField: 'end',
-				caption: 'Конец',
-				dataType: 'date',
-				width: 100
-		},
-		{
-				dataField: 'text',
-				caption: 'Название'
-		},
-		{
-				dataField: 'color',
-				caption: 'Цвет',
-				dataType: 'color',
-				width: 130,
-				cellTemplate: cellTemplate,
-				editCellTemplate: editCellTemplate
-		},
-		{
-				dataField: 'type',
-				caption: 'Тип',
-				width: 100,
-				groupIndex: 0,
-				showWhenGrouped: true,
-				lookup: {
-						dataSource: periodTypeItems,
-						displayExpr: 'name',
-						valueExpr: 'id'
+				},
+				{
+					dataField: 'end',
+					caption: 'Конец',
+					dataType: 'date',
+					width: 100
+				},
+				{
+					dataField: 'text',
+					caption: 'Название'
+				},
+				{
+					dataField: 'color',
+					caption: 'Цвет',
+					dataType: 'color',
+					width: 130,
+					cellTemplate: cellTemplate,
+					editCellTemplate: editCellTemplate
+				},
+				{
+					dataField: 'type',
+					caption: 'Тип',
+					width: 100,
+					groupIndex: 0,
+					showWhenGrouped: true,
+					lookup: {
+							dataSource: periodTypeItems,
+							displayExpr: 'name',
+							valueExpr: 'id'
+					}
 				}
-		}]}"></div>
+			]
+		}"></div>
 		<h2 class="group-title">Настройки отображения</h2>
 		<div id="birthday" dx-date-box="{
 			value: birthday,
@@ -85,8 +87,9 @@
 		}"></div>
 		<div id="life-calendar-type" dx-radio-group="{
 			items: lifeCalendarTypeItems,
-			value: lifeCalendarType,
-			layout: 'horizontal'
+			bindingOptions: { value: 'lifeCalendarType' },
+			layout: 'horizontal',
+			onValueChanged: generateBricks
 		}"></div>
 		<div id="apply" dx-button="{
 			text: 'Применить',
@@ -94,7 +97,13 @@
 		}"></div>
 	</div>
 	<h1>Календарь жизни</h1>
-	<div class="life">
+	<div class="life-calendar" >
+		<div class="year" ng-repeat="year in bricks">
+			<span class="year-tooltip">{{year.yearTooltip}}</span>
+			<div class="brick" ng-repeat="brick in year">
+				<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
+			</div>
+		</div>
 	</div>
 
 	<script src="vendor/jquery.min.js"></script>

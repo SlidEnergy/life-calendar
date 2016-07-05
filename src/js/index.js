@@ -4,9 +4,10 @@ var calendarModule = angular.module('calendar', ['dx']);
 
 calendarModule.controller('calendarCtrl', [ '$scope', function($scope){
 
-	var COL_COUNT = 52;
-	var ROW_COUNT = 90;
-	var WEEK_COUNT = COL_COUNT * ROW_COUNT;
+	var WEEK_COUNT_IN_YEAR = 52;
+	var MONTH_COUNT_IN_YEAR = 12;
+	var YEAR_COUNT = 90;
+	//var WEEK_COUNT = COL_COUNT * ROW_COUNT;
 
 	var PeriodType = {
 		Basic: 0,
@@ -45,9 +46,57 @@ calendarModule.controller('calendarCtrl', [ '$scope', function($scope){
 	$scope.withoutFuture = true;
 
 	$scope.lifeCalendarTypeItems = ['Неделя', 'Месяц'];
-	$scope.lifeCalendarType = 'Неделя';
+	$scope.lifeCalendarType = 'Месяц';
 
 	loadPeriods();
+
+	generateBricks();
+
+	$scope.generateBricks = generateBricks;
+
+	function generateBricks()
+	{
+		var bricks = [];
+
+		if($scope.lifeCalendarType == 'Неделя')
+		{
+			for(var i = 0; i < YEAR_COUNT; i++)
+			{
+				bricks[i] = [];
+
+				if(i % 5 == 0)
+				bricks[i].yearTooltip = i;
+
+				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
+				{
+					bricks[i][j] = { year: i, brick: j };
+
+					if(i ==0 && (j + 1) % 5 == 0)
+						bricks[i][j].brickTooltip = j + 1;
+				}
+			}
+		}
+		else
+		{
+			for(var i = 0; i < YEAR_COUNT; i++)
+			{
+				bricks[i] = [];
+
+				if(i % 5 == 0)
+				bricks[i].yearTooltip = i;
+
+				for(var j = 0; j < MONTH_COUNT_IN_YEAR; j++)
+				{
+					bricks[i][j] = { year: i, brick: j };
+
+					if(i ==0 && (j + 1) % 1 == 0)
+						bricks[i][j].brickTooltip = j + 1;
+				}
+			}
+		}
+
+		$scope.bricks = bricks;
+	}
 
 	function updateLife() {
 
@@ -85,7 +134,7 @@ calendarModule.controller('calendarCtrl', [ '$scope', function($scope){
 						var weeksToStart = GetWeeksFromBirthdayToDate(item.start, birthday, weeksToBirthday);
 						var weeksToEnd;
 
-						if(item.end === undefined)
+						if(item.end === undefined)	
 							weeksToEnd = weeksToNow;
 						else
 							weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
@@ -192,7 +241,7 @@ calendarModule.controller('calendarCtrl', [ '$scope', function($scope){
 					usePound = true;
 			}
 
-			var num = parseInt(col, 16);
+			var num = parseInt(col, 16);		
 
 			var r = (num >> 16) + amt;
 
@@ -212,9 +261,6 @@ calendarModule.controller('calendarCtrl', [ '$scope', function($scope){
 			return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 
 	}
-
-	for (var i = 0; i < WEEK_COUNT; i++)
-			$('.life').append('<div class="week"></div>');
 }]);
  
 // var app = angular.module('app', ['calendar']);
@@ -242,9 +288,4 @@ $.when(
 	//initialize your application here
 
 	Globalize.locale(navigator.language || navigator.browserLanguage);
-
-	// loadPeriods();
-
-	// for (var i = 0; i < WEEK_COUNT; i++)
-	// 		$('.life').append('<div class="week"></div>');
 });

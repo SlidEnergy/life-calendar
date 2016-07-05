@@ -65,145 +65,32 @@ h1 {
 	margin-top: 50px;
 }
 
-.life {
-	position: relative;
+.life-calendar {
 	margin: 10px auto;
 	width: 900px;
 	background-color: white;
-	display: flex;
-	flex-wrap: wrap;
+	position: relative;
 }
 
-.week {
+.year {
+
+	height: 17px;
+}
+
+.year-tooltip {
+	position: absolute;
+	left: -15px;
+}
+
+.brick-tooltip {
+	position: absolute;
+	top: -17px;	
+}
+
+.brick {
+	display: inline-block;
 	margin: 3px 0 0 3px;
 	min-width: 14px;
 	min-height: 14px;
 	border: 1px solid #b9b9b9;
-	box-sizing: border-box;
-}
-
-
-.week:nth-child(-5n+50)::before {
-	content: '';
-	position: absolute;
-	top: -17px;
-}
-
-.week:nth-child(260n+1)::before {
-	content: '1';
-	position: absolute;
-	left: -17px;
-	margin-top: -5px;
-}
-
-.week:nth-child(1)::before {
-	content: '0';
-}
-
-.week:nth-child(261)::before {
-	content: '5';
-}
-
-.week:nth-child(521)::before {
-	content: '10';
-}
-
-.week:nth-child(781)::before {
-	content: '15';
-}
-
-.week:nth-child(1041)::before {
-	content: '20';
-}
-
-.week:nth-child(1301)::before {
-	content: '25';
-}
-
-.week:nth-child(1561)::before {
-	content: '30';
-}
-
-.week:nth-child(1821)::before {
-	content: '35';
-}
-
-.week:nth-child(2081)::before {
-	content: '40';
-}
-
-.week:nth-child(2341)::before {
-	content: '45';
-}
-
-.week:nth-child(2601)::before {
-	content: '50';
-}
-
-.week:nth-child(2861)::before {
-	content: '55';
-}
-
-.week:nth-child(3121)::before {
-	content: '60';
-}
-
-.week:nth-child(3381)::before {
-	content: '65';
-}
-
-.week:nth-child(3641)::before {
-	content: '70';
-}
-
-.week:nth-child(3901)::before {
-	content: '75';
-}
-
-.week:nth-child(4161)::before {
-	content: '80';
-}
-
-.week:nth-child(4421)::before {
-	content: '85';
-}
-
-.week:nth-child(5)::before {
-	content: '5';
-}
-
-.week:nth-child(10)::before {
-	content: '10';
-}
-
-.week:nth-child(15)::before {
-	content: '15';
-}
-
-.week:nth-child(20)::before {
-	content: '20';
-}
-
-.week:nth-child(25)::before {
-	content: '25';
-}
-
-.week:nth-child(30)::before {
-	content: '30';
-}
-
-.week:nth-child(35)::before {
-	content: '35';
-}
-
-.week:nth-child(40)::before {
-	content: '40';
-}
-
-.week:nth-child(45)::before {
-	content: '45';
-}
-
-.week:nth-child(50)::before {
-	content: '50';
 }
