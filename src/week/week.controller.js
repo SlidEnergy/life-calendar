@@ -26,8 +26,38 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 			}
 		}
 
+		for(var w = 0; w < $scope.list.length; w++)
+		{
+			var weeksToBirthday = GetWeeksToDate($scope.birthday);
+
+			var startYear = $scope.list[w].start.getFullYear() - $scope.birthday.getFullYear();
+			var weeksToStart = GetWeeksToDate($scope.list[w].start);
+
+			var end = $scope.list[w].end;
+
+			if(end === undefined)
+				end = new Date();
+
+			var endYear = end.getFullYear() - $scope.birthday.getFullYear();
+			var weeksToEnd = GetWeeksToDate(end);
+
+			for(var i = startYear; i <= endYear; i++)
+			{
+				for(var j = weeksToStart; j <= weeksToEnd; j++)
+				{
+					bricks[i][j].data = $scope.list[w];
+				}
+			}
+		}
+
 		$scope.bricks = bricks;
 	}
+
+	function GetWeeksToDate(date) {
+
+		return Math.floor(Math.abs((date - new Date(date.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
+	}
+
 
 	function updateLife() {
 
