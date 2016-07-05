@@ -1,0 +1,6 @@
+<div class="year" ng-repeat="year in bricks">
+	<span class="year-tooltip">{{year.yearTooltip}}</span>
+	<div class="brick" ng-repeat="brick in year">
+		<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
+	</div>
+</div>

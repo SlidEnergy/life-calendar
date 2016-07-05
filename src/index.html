@@ -89,7 +89,7 @@
 			items: lifeCalendarTypeItems,
 			bindingOptions: { value: 'lifeCalendarType' },
 			layout: 'horizontal',
-			onValueChanged: generateBricks
+			onValueChanged: changeCalendarView
 		}"></div>
 		<div id="apply" dx-button="{
 			text: 'Применить',
@@ -97,13 +97,7 @@
 		}"></div>
 	</div>
 	<h1>Календарь жизни</h1>
-	<div class="life-calendar" >
-		<div class="year" ng-repeat="year in bricks">
-			<span class="year-tooltip">{{year.yearTooltip}}</span>
-			<div class="brick" ng-repeat="brick in year">
-				<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
-			</div>
-		</div>
+	<div class="life-calendar" ng-view>
 	</div>
 
 	<script src="vendor/jquery.min.js"></script>
@@ -124,9 +118,13 @@
 
 	<script src="vendor/angular/angular.min.js"></script>
 	<script src="vendor/angular/angular-sanitize.min.js"></script>
+	<script src="vendor/angular/angular-route.min.js"></script>
 
 	<script src="vendor/devextreme-web/js/dx.web.js"></script>
 	<script src="vendor/devextreme-web/js/localization/dx.web.ru.js"></script>
 	<script src="js/index.js"></script>
+	<script src="js/calendar.controller.js"></script>
+	<script src="week/week.controller.js"></script>
+	<script src="month/month.controller.js"></script>
 </body>
 </html>
