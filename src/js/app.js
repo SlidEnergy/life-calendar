@@ -19,28 +19,32 @@ $.when(
 
 	//initialize your application here
 
-	Globalize.locale(navigator.language || navigator.browserLanguage);
+	Globalize.locale(navigator.language || navigator.browserLanguage);	
+
+	// var app = angular.module('app', ['calendar']);
+	
+	var calendarModule = angular.module('calendar', ['dx', 'ngRoute'])
+		.config(['$routeProvider', '$locationProvider',
+		  function($routeProvider, $locationProvider) {
+			 $routeProvider
+				.when('/week', { 
+					templateUrl: 'week/week.html',
+					controller: 'weekCtrl',
+					controllerAs: 'week'
+				})
+				.when('/month', {
+					templateUrl: 'month/month.html',
+					controller: 'monthCtrl',
+					controllerAs: 'month'
+				});
+
+			$routeProvider.otherwise({redirectTo: '/week'});
+
+			 // $locationProvider.html5Mode(true);
+		}])
+		.controller('calendarCtrl', [ '$scope', '$window', '$location', calendarCtrl])
+		.controller('weekCtrl', [ '$scope', weekCtrl])
+		.controller('monthCtrl', [ '$scope', monthCtrl]);
+
+		angular.bootstrap($('body'), ['calendar']);
 });
-
-var calendarModule = angular.module('calendar', ['dx', 'ngRoute']);
-
-calendarModule.config(['$routeProvider', '$locationProvider',
-  function($routeProvider, $locationProvider) {
-	 $routeProvider
-		.when('/week', { 
-			templateUrl: 'week/week.html',
-			controller: 'weekCtrl',
-			controllerAs: 'week'
-		})
-		.when('/month', {
-			templateUrl: 'month/month.html',
-			controller: 'monthCtrl',
-			controllerAs: 'month'
-		});
-
-	$routeProvider.otherwise({redirectTo: '/week'});
-
-	 // $locationProvider.html5Mode(true);
-}]);
-
-// var app = angular.module('app', ['calendar']);

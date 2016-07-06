@@ -1,4 +1,4 @@
-calendarModule.controller('weekCtrl', [ '$scope', function($scope){
+function weekCtrl($scope) {
 
 	var WEEK_COUNT_IN_YEAR = 52;
 	var YEAR_COUNT = 90;
@@ -7,7 +7,7 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 
 	$scope.view.updateCalendar = function() {
 		generateBricks();
-	}
+	};
 
 	function generateEmptyBricksGrid()
 	{
@@ -17,14 +17,14 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 		{
 			bricks[i] = [];
 
-			if(i % 5 == 0)
-			bricks[i].yearTooltip = i;
+			if(i % 5 === 0)
+				bricks[i].yearTooltip = i;
 
 			for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 			{
 				bricks[i][j] = { year: i, brick: j };
 
-				if(i ==0 && (j + 1) % 5 == 0)
+				if(i === 0 && (j + 1) % 5 === 0)
 					bricks[i][j].brickTooltip = j + 1;
 			}
 		}
@@ -63,7 +63,7 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 		{
 			var week = $scope.list[w];
 
-			if (week.type !== undefined && week.type != null && checkedPeriodTypes.indexOf(week.type) < 0)
+			if (week.type !== undefined && week.type !== null && checkedPeriodTypes.indexOf(week.type) < 0)
 				continue;
 
 			if($scope.withoutFuture && $scope.list[w].start > new Date())
@@ -136,7 +136,6 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 		return Math.floor(Math.abs((date - new Date(date.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
 	}
 
-
 	function periodToString(period)
 	{
 		var end = period.end;
@@ -154,31 +153,31 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 
 	function LightenDarkenColor(col, amt) {
 
-			var usePound = false;
+		var usePound = false;
 
-			if (col[0] == "#") {
-					col = col.slice(1);
-					usePound = true;
-			}
+		if (col[0] == "#") {
+				col = col.slice(1);
+				usePound = true;
+		}
 
-			var num = parseInt(col, 16);		
+		var num = parseInt(col, 16);		
 
-			var r = (num >> 16) + amt;
+		var r = (num >> 16) + amt;
 
-			if (r > 255) r = 255;
-			else if (r < 0) r = 0;
+		if (r > 255) r = 255;
+		else if (r < 0) r = 0;
 
-			var b = ((num >> 8) & 0x00FF) + amt;
+		var b = ((num >> 8) & 0x00FF) + amt;
 
-			if (b > 255) b = 255;
-			else if (b < 0) b = 0;
+		if (b > 255) b = 255;
+		else if (b < 0) b = 0;
 
-			var g = (num & 0x0000FF) + amt;
+		var g = (num & 0x0000FF) + amt;
 
-			if (g > 255) g = 255;
-			else if (g < 0) g = 0;
+		if (g > 255) g = 255;
+		else if (g < 0) g = 0;
 
-			return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+		return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 
 	}
-}]);
+}

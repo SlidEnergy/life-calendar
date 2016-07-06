@@ -1,33 +1,24 @@
-calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', function($scope, $window, $location){
-
-	var WEEK_COUNT_IN_YEAR = 52;
-	var MONTH_COUNT_IN_YEAR = 12;
-	var YEAR_COUNT = 90;
-	//var WEEK_COUNT = COL_COUNT * ROW_COUNT;
+function calendarCtrl($scope, $window, $location) {
 
 	var PeriodType = {
 		Basic: 0,
 		Finance: 1,
 		Carrier: 2,
 		Future: 3
-	}
+	};
 
 	$scope.PeriodType = PeriodType;
 
-	var list = [];
+	$scope.list = [];
 
-	$scope.list = list;
+	// TODO: переделать из jquery подхода в angular
 	$scope.cellTemplate = function (cellElement, cellInfo) {
-			$(cellElement)
-					.css('background-color', cellInfo.value)
+		$(cellElement).css('background-color', cellInfo.value);
 	};
 	$scope.editCellTemplate = function (cellElement, cellInfo) {
-			cellElement.dxColorBox({
-					value: cellInfo.value,
-					onValueChanged: function (e) {
-							cellInfo.setValue(e.value);
-					}
-			});
+		cellElement.dxColorBox({ 
+			value: cellInfo.value, 
+			onValueChanged: function (e) { cellInfo.setValue(e.value); }});
 	};
 
 	$scope.birthday = new Date(1987, 6, 30);
@@ -35,6 +26,7 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 	$scope.birthdayMax = new Date();
 
 	var periodTypeItems = [];
+
 	for (var prop in PeriodType) {
 		periodTypeItems.push({ id: PeriodType[prop], name: prop, value: true });
 	}
@@ -55,39 +47,37 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 	$scope.changeCalendarView = function (e) {
 
 		if(e.value == 'Неделя')
-		{
 			$window.location.href = '#/week';
-		}
 		else
-		{
 			$window.location.href = '#/month';
-		}
 	};
-
-	$scope.changeCalendarSettings = function() {
-		
-		savePeriods();
-
-		$scope.view.updateCalendar();
-	}
-
-	$scope.view = { updateCalendar: function() {} };
 
 	function loadPeriods() {
 
-			var periods = JSON.parse(localStorage.getItem('Periods'), function(key, value) {
-					if (key == 'start' || key == 'end')
-							return new Date(value);
+		var periods = JSON.parse(localStorage.getItem('Periods'), function(key, value) {
+			
+			if (key == 'start' || key == 'end')
+					return new Date(value);
 
-					return value;
-			});
+			return value;
+		});
 
-			if (periods)
-					$scope.list = periods;
+		if (periods)
+			$scope.list = periods;
 	}
 
 	function savePeriods() {
 
 		localStorage.setItem('Periods', JSON.stringify($scope.list));
 	}
-}]);
+
+	$scope.changeCalendarSettings = function() {
+		
+		savePeriods();
+
+		$scope.view.updateCalendar();
+	};
+
+	// Интерфейс для View
+	$scope.view = { updateCalendar: function() {} };
+}
