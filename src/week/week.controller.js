@@ -2,11 +2,14 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 
 	var WEEK_COUNT_IN_YEAR = 52;
 	var YEAR_COUNT = 90;
-	//var WEEK_COUNT = COL_COUNT * ROW_COUNT;
 
 	generateBricks();
 
-	function generateBricks()
+	$scope.view.updateCalendar = function() {
+		generateBricks();
+	}
+
+	function generateEmptyBricksGrid()
 	{
 		var bricks = [];
 
@@ -26,9 +29,45 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 			}
 		}
 
+		return bricks;
+	}
+
+	function generateBricks()
+	{
+		var bricks = generateEmptyBricksGrid();
+
+		generatePeriods(bricks);
+
+		generateImportantDates(bricks);
+
+		$scope.bricks = bricks;
+	}
+
+	function generatePeriods(bricks) {
+
+		var checkedPeriodTypes = [];
+
+		if ($scope.periodTypeItems[0].value)
+			checkedPeriodTypes.push($scope.PeriodType.Basic);
+
+		if ($scope.periodTypeItems[1].value)
+			checkedPeriodTypes.push($scope.PeriodType.Finance);
+
+		if ($scope.periodTypeItems[2].value)
+			checkedPeriodTypes.push($scope.PeriodType.Carrier);
+
+		if ($scope.periodTypeItems[3].value)
+			checkedPeriodTypes.push($scope.PeriodType.Future);
+
 		for(var w = 0; w < $scope.list.length; w++)
 		{
-			var weeksToBirthday = GetWeeksToDate($scope.birthday);
+			var week = $scope.list[w];
+
+			if (week.type !== undefined && week.type != null && checkedPeriodTypes.indexOf(week.type) < 0)
+				continue;
+
+			if($scope.withoutFuture && $scope.list[w].start > new Date())
+				continue;
 
 			var startYear = $scope.list[w].start.getFullYear() - $scope.birthday.getFullYear();
 			var weeksToStart = GetWeeksToDate($scope.list[w].start);
@@ -38,19 +77,58 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 			if(end === undefined)
 				end = new Date();
 
+			if($scope.withoutFuture && end > new Date())
+				end = new Date();
+
 			var endYear = end.getFullYear() - $scope.birthday.getFullYear();
 			var weeksToEnd = GetWeeksToDate(end);
 
 			for(var i = startYear; i <= endYear; i++)
 			{
-				for(var j = weeksToStart; j <= weeksToEnd; j++)
+				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 				{
-					bricks[i][j].data = $scope.list[w];
+					if(startYear == endYear)
+					{
+						if(j >= weeksToStart && j <= weeksToEnd)
+						{
+							bricks[i][j].data = $scope.list[w];
+							bricks[i][j].data.title = periodToString(bricks[i][j].data);
+							
+							if(week.type == $scope.PeriodType.Basic)
+								bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
+						}
+					}
+					else
+					{
+						if((i == startYear && j >= weeksToStart) || (i == endYear && j <= weeksToEnd) || (i > startYear && i < endYear))
+						{
+							bricks[i][j].data = $scope.list[w];
+							bricks[i][j].data.title = periodToString(bricks[i][j].data);
+
+							if(week.type == $scope.PeriodType.Basic)
+								bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
+						}
+					}
 				}
 			}
-		}
 
-		$scope.bricks = bricks;
+			if(week.type == $scope.PeriodType.Basic)
+			{
+				var averageYearOfPeriod = Math.floor((endYear - startYear)/2);
+
+				bricks[averageYearOfPeriod].basicLabel = week.text;
+				bricks[averageYearOfPeriod].basicColor = LightenDarkenColor(week.color, -100);
+			}
+		}
+	}
+
+	function generateImportantDates(bricks) {
+
+		var weeksToBirthday = GetWeeksToDate($scope.birthday);
+		var weeksToToday = GetWeeksToDate(new Date());
+
+		bricks[0][weeksToBirthday].importantTooltip = Globalize.dateFormatter()($scope.birthday) + ' : День рождения';
+		bricks[new Date().getFullYear() - $scope.birthday.getFullYear()][weeksToToday].importantTooltip = Globalize.dateFormatter()(new Date()) + ' : Сегодня';
 	}
 
 	function GetWeeksToDate(date) {
@@ -59,120 +137,19 @@ calendarModule.controller('weekCtrl', [ '$scope', function($scope){
 	}
 
 
-	function updateLife() {
-
-		var selectedPeriodTypes = [];
-
-		if ($('#Basic-checkbox').dxCheckBox('instance').option('value'))
-				selectedPeriodTypes.push(PeriodType.Basic);
-
-		if ($('#Finance-checkbox').dxCheckBox('instance').option('value'))
-				selectedPeriodTypes.push(PeriodType.Finance);
-
-		if ($('#Carrier-checkbox').dxCheckBox('instance').option('value'))
-				selectedPeriodTypes.push(PeriodType.Carrier);
-
-		if ($('#Future-checkbox').dxCheckBox('instance').option('value'))
-				selectedPeriodTypes.push(PeriodType.Future);
-
-		var withoutFuture = $('#without-future').dxCheckBox('instance').option('value');
-
-		// Очищаем календарь
-
-		$('.week').css('background-color', 'white').css('outline', '2px solid white')
-				.tooltip({ disabled: true });
-
-		$('.label').remove();
-
-		var birthday = $('#birthday').dxDateBox('instance').option('value');
-		var weeksToBirthday = GetWeeksToBirthday(birthday);
-		var weeksToNow = GetWeeksFromBirthdayToDate(new Date(), birthday, weeksToBirthday);
-
-		$.each(list, function (i, item) {
-
-				if (~selectedPeriodTypes.indexOf(item.type)) {
-
-						var weeksToStart = GetWeeksFromBirthdayToDate(item.start, birthday, weeksToBirthday);
-						var weeksToEnd;
-
-						if(item.end === undefined)	
-							weeksToEnd = weeksToNow;
-						else
-							weeksToEnd = GetWeeksFromBirthdayToDate(item.end, birthday, weeksToBirthday);
-
-							// Не показывать будущее
-						if (withoutFuture) {
-								// Не рисуем периоды начинающиеся в будущем.
-								if (weeksToStart >= weeksToNow)
-										return;
-
-								// Рисуем периоды заканчивающие в будущем до сегодняшнего дня.
-								if (weeksToEnd > weeksToNow)
-										weeksToEnd = weeksToNow;
-						}
-
-						$('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
-									.css('background-color', item.color)
-									.tooltip({ items: '.week', content: PeriodToString(item), track: true, disabled: false });
-
-						// Для базовых периодов заполняем фон за клетками.
-
-						if (item.type == PeriodType.Basic) {
-								$('.week:nth-child(n+' + weeksToStart + '):nth-child(-n+' + weeksToEnd + ')')
-											.css('outline', '2px solid ' + item.color);
-						}
-
-							// Для базовых периодов добавляем метки с текстом справа
-
-						if (item.type == PeriodType.Basic) {
-								var weeksToMiddlePeriod = Math.floor((weeksToStart + weeksToEnd) / 2);
-
-								$('<div class="label">- ' + item.text + '</div>')
-											.appendTo('.week:nth-child(' + weeksToMiddlePeriod + ')')
-											.css('color', LightenDarkenColor(item.color, -100));
-						}
-				}
-		});
-
-			// День рождения
-
-			$('.week:nth-child(' + weeksToBirthday + ')')
-			.css('border-color', '#0000ff')
-			.css('border-width', '2px')
-			.tooltip({ items: '.week', content: Globalize.dateFormatter()(birthday) + ' : День рождения', track: true, disabled: false });
-
-			// СегодняdateFormatter
-
-			$('.week:nth-child(' + weeksToNow + ')')
-					.css('border-color', '#0000ff')
-					.css('border-width', '2px')
-					.tooltip({ items: '.week', content: Globalize.dateFormatter()(new Date()) + ' : Сегодня', track: true, disabled: false });
-	}
-
-	function GetWeeksFromBirthdayToDate(date, birthday, weeksToBirthday) {
-
-			if (!birthday) {
-					birthday = $('#birthday').dxDateBox('instance').option('value');
-					weeksToBirthday = GetWeeksToBirthday(birthday);
-			}
-
-			return Math.floor(Math.abs((date - birthday) / (7 * 24 * 60 * 60 * 1000))) + weeksToBirthday;
-	}
-
-	function GetWeeksToBirthday(birthday) {
-
-			if (!birthday)
-					birthday = $('#birthday').dxDateBox('instance').option('value');
-
-			return Math.floor(Math.abs((birthday - new Date(birthday.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
-	}
-
-	function PeriodToString(period)
+	function periodToString(period)
 	{
 		var end = period.end;
+
 		if (end === undefined)
 			end = new Date();
-			return Globalize.dateFormatter()(period.start) + ' - ' + Globalize.dateFormatter()(end) + ' : ' + period.text;
+
+		var string = Globalize.dateFormatter()(period.start) + ' - ' + Globalize.dateFormatter()(end);
+
+		if(period.text !== undefined)
+			string += ' : ' + period.text;
+
+		return string;
 	}
 
 	function LightenDarkenColor(col, amt) {

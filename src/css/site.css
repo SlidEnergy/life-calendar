@@ -94,3 +94,8 @@ h1 {
 	min-height: 14px;
 	border: 1px solid #b9b9b9;
 }
+
+.important-brick {
+	border-color: #00f;
+	border-width: 2px;
+}

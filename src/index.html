@@ -23,14 +23,14 @@
 			paging: { enabled: false },
 			groupPanel: { visible: true },
 			editing: {
-					mode: 'cell',
-					allowUpdating: true,
-					allowDeleting: true,
-					allowAdding: true
+				mode: 'cell',
+				allowUpdating: true,
+				allowDeleting: true,
+				allowAdding: true
 			},
-			onRowUpdated: savePeriods(),
-			onRowRemoved: savePeriods(),
-			onRowInserted: savePeriods(),
+			onRowUpdated: changeCalendarSettings,
+			onRowRemoved: changeCalendarSettings,
+			onRowInserted: changeCalendarSettings,
 			columns: [{
 				dataField: 'start',
 				caption: 'Начало',
@@ -71,19 +71,22 @@
 		}"></div>
 		<h2 class="group-title">Настройки отображения</h2>
 		<div id="birthday" dx-date-box="{
-			value: birthday,
+			bindingOptions: { value: 'birthday' },
 			max: birthdayMax,
-			min: birthdayMin
+			min: birthdayMin,
+			onValueChanged: changeCalendarSettings
 		}"></div>
 		<div id="types" ng-repeat="type in periodTypeItems">
 			<div class="checkbox" id="{type.name + 'checkbox'}" dx-check-box="{
-				value: true,
-				text: type.name
+				bindingOptions: { value: 'type.value' },
+				text: type.name,
+				onValueChanged: changeCalendarSettings
 			}"></div>
 		</div>
 		<div id="without-future" dx-check-box="{
-			value: withoutFuture,
-			text: 'Не показывать будущее'
+			bindingOptions: { value: 'withoutFuture' },
+			text: 'Не показывать будущее',
+			onValueChanged: changeCalendarSettings
 		}"></div>
 		<div id="life-calendar-type" dx-radio-group="{
 			items: lifeCalendarTypeItems,
@@ -93,7 +96,7 @@
 		}"></div>
 		<div id="apply" dx-button="{
 			text: 'Применить',
-			onClick: updateLife
+			onClick: changeCalendarSettings
 		}"></div>
 	</div>
 	<h1>Календарь жизни</h1>
@@ -122,7 +125,7 @@
 
 	<script src="vendor/devextreme-web/js/dx.web.js"></script>
 	<script src="vendor/devextreme-web/js/localization/dx.web.ru.js"></script>
-	<script src="js/index.js"></script>
+	<script src="js/app.js"></script>
 	<script src="js/calendar.controller.js"></script>
 	<script src="week/week.controller.js"></script>
 	<script src="month/month.controller.js"></script>

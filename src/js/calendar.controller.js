@@ -12,6 +12,8 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 		Future: 3
 	}
 
+	$scope.PeriodType = PeriodType;
+
 	var list = [];
 
 	$scope.list = list;
@@ -32,12 +34,12 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 	$scope.birthdayMin = new Date(1900, 0, 1);
 	$scope.birthdayMax = new Date();
 
-	var enumsObj = [];
+	var periodTypeItems = [];
 	for (var prop in PeriodType) {
-			enumsObj.push({ id: PeriodType[prop], name: prop })
+		periodTypeItems.push({ id: PeriodType[prop], name: prop, value: true });
 	}
 
-	$scope.periodTypeItems = enumsObj;
+	$scope.periodTypeItems = periodTypeItems;
 
 	$scope.withoutFuture = true;
 
@@ -62,6 +64,15 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 		}
 	};
 
+	$scope.changeCalendarSettings = function() {
+		
+		savePeriods();
+
+		$scope.view.updateCalendar();
+	}
+
+	$scope.view = { updateCalendar: function() {} };
+
 	function loadPeriods() {
 
 			var periods = JSON.parse(localStorage.getItem('Periods'), function(key, value) {
@@ -77,6 +88,6 @@ calendarModule.controller('calendarCtrl', [ '$scope', '$window', '$location', fu
 
 	function savePeriods() {
 
-		localStorage.setItem('Periods', JSON.stringify(list));
+		localStorage.setItem('Periods', JSON.stringify($scope.list));
 	}
 }]);
