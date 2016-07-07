@@ -63,7 +63,11 @@ function weekCtrl($scope) {
 		{
 			var week = $scope.list[w];
 
+			// Показываем только отмеченные типы
 			if (week.type !== undefined && week.type !== null && checkedPeriodTypes.indexOf(week.type) < 0)
+				continue;
+
+			if(week.start === undefined)
 				continue;
 
 			if($scope.withoutFuture && $scope.list[w].start > new Date())
@@ -87,34 +91,76 @@ function weekCtrl($scope) {
 			{
 				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 				{
-					if(startYear == endYear)
+					if((startYear == endYear && j >= weeksToStart && j <= weeksToEnd) ||
+						(startYear != endYear && ((i == startYear && j >= weeksToStart) || (i == endYear && j <= weeksToEnd) || (i > startYear && i < endYear))))
 					{
-						if(j >= weeksToStart && j <= weeksToEnd)
-						{
-							bricks[i][j].data = $scope.list[w];
-							bricks[i][j].data.title = periodToString(bricks[i][j].data);
-							
-							if(week.type == $scope.PeriodType.Basic)
-								bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
-						}
-					}
-					else
-					{
-						if((i == startYear && j >= weeksToStart) || (i == endYear && j <= weeksToEnd) || (i > startYear && i < endYear))
-						{
-							bricks[i][j].data = $scope.list[w];
-							bricks[i][j].data.title = periodToString(bricks[i][j].data);
+						if(bricks[i][j].weeks === undefined)
+							bricks[i][j].weeks = [];
 
-							if(week.type == $scope.PeriodType.Basic)
-								bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
-						}
+						bricks[i][j].weeks.push(week);
+
+						if(bricks[i][j].data === undefined)
+							bricks[i][j].data = {};
+
+						bricks[i][j].data.start = week.start;
+						bricks[i][j].data.end = week.end;
+
+						bricks[i][j].data.text = week.text;
+
+						(function(weeks) {
+
+							if(weeks.length == 1)
+							{
+								bricks[i][j].data.color = week.color;
+								bricks[i][j].data.size = '100%';
+								return;
+							}
+
+							var colors = [];
+
+							for(var k = 0; k < weeks.length; k++)
+								if(weeks[k].type != $scope.PeriodType.Basic)
+									colors.push(weeks[k].color);
+
+							switch(colors.length)
+							{
+								case 1: 
+									bricks[i][j].data.color = week.color;
+									bricks[i][j].data.size = '100%';
+									return;
+								case 2: 
+									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
+									bricks[i][j].data.size = '100%';
+									return;
+								case 3: 
+									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
+									bricks[i][j].data.size = '100% 50%, 100% 100%';
+									return;
+								case 4: 
+									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
+									// bricks[i][j].data.color = '-webkit-linear-gradient(left, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +'), ' +
+									// 	'-webkit-linear-gradient(left, ' + colors[2] +', ' + colors[2] + ' 50%, ' + colors[3] + ' 50%, ' + colors[3] +')';
+									bricks[i][j].data.size = '100% 50%, 100% 50%';
+									return;
+							}
+						})(bricks[i][j].weeks);
+
+						if(bricks[i][j].data.title === undefined)
+							bricks[i][j].data.title = periodToString(bricks[i][j].data);
+						else
+							bricks[i][j].data.title = bricks[i][j].data.title + '\r\n' + periodToString(bricks[i][j].data);
+						
+						bricks[i][j].data.type = week.type;
+
+						if(week.type == $scope.PeriodType.Basic)
+							bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
 					}
 				}
 			}
 
 			if(week.type == $scope.PeriodType.Basic)
 			{
-				var averageYearOfPeriod = Math.floor((endYear - startYear)/2);
+				var averageYearOfPeriod = Math.floor((endYear + startYear)/2);
 
 				bricks[averageYearOfPeriod].basicLabel = week.text;
 				bricks[averageYearOfPeriod].basicColor = LightenDarkenColor(week.color, -100);

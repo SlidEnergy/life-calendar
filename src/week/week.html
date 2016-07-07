@@ -1,7 +1,7 @@
 <div class="year" ng-repeat="year in bricks">
 	<span class="year-tooltip">{{year.yearTooltip}}</span>
 	<div class="brick" ng-repeat="brick in year" ng-style="{
-		'background-color': brick.data.color, 
+		'background': brick.data.color, 
 		'outline': brick.data.outline
 	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.data.title}}">
 		<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
