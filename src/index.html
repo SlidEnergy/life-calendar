@@ -17,6 +17,13 @@
 <body ng-controller='calendarCtrl'>
 	<div class="form">
 		<h2 class="group-title">Жизненные периоды</h2>
+		<span>Дата рождения:</span>
+		<div id="birthday" dx-date-box="{
+			bindingOptions: { value: 'birthday' },
+			max: birthdayMax,
+			min: birthdayMin,
+			onValueChanged: changeCalendarSettings
+		}"></div>
 		<div id="grid-container" dx-data-grid="{
 			dataSource: list,
 			paging: { enabled: false },
@@ -69,12 +76,7 @@
 			]
 		}"></div>
 		<h2 class="group-title">Настройки отображения</h2>
-		<div id="birthday" dx-date-box="{
-			bindingOptions: { value: 'birthday' },
-			max: birthdayMax,
-			min: birthdayMin,
-			onValueChanged: changeCalendarSettings
-		}"></div>
+		<span class="label">Отображать следующие периоды:</span>
 		<div id="types" ng-repeat="type in periodTypeItems">
 			<div class="checkbox" id="{type.name + 'checkbox'}" dx-check-box="{
 				bindingOptions: { value: 'type.value' },
@@ -82,11 +84,14 @@
 				onValueChanged: changeCalendarSettings
 			}"></div>
 		</div>
-		<div id="without-future" dx-check-box="{
+		<br>
+		<div class="checkbox" id="without-future" dx-check-box="{
 			bindingOptions: { value: 'withoutFuture' },
-			text: 'Не показывать будущее',
+			text: 'Не показывать будущие периоды',
 			onValueChanged: changeCalendarSettings
 		}"></div>
+		<br>
+		<span class="label">Вид календаря:</span>
 		<div id="life-calendar-type" dx-radio-group="{
 			items: lifeCalendarTypeItems,
 			bindingOptions: { value: 'lifeCalendarType' },

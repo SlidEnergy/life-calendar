@@ -42,11 +42,19 @@ h1 {
 	width: 120px !important;
 }
 
-.checkbox {
+.form .checkbox {
 	margin: 10px 10px 10px 0;
 }
 
-.label {
+.form .label {
+	margin-right: 10px;
+}
+
+.form #without-future {
+	margin-top: 0px;
+}
+
+.life-calendar-label {
 	position: absolute;
 	left: 900px;
 	text-transform: uppercase; 
@@ -56,6 +64,7 @@ h1 {
 }
 
 #grid-container {
+	margin-top: 10px;
 	width: 100%;
 	border-bottom: 1px solid #d3d3d3
 }

@@ -61,6 +61,9 @@ function weekCtrl($scope) {
 		if ($scope.periodTypeItems[3].value)
 			checkedPeriodTypes.push($scope.PeriodType.Future);
 
+		if ($scope.periodTypeItems[4].value)
+			checkedPeriodTypes.push($scope.PeriodType.Private);
+
 		return checkedPeriodTypes
 	}
 

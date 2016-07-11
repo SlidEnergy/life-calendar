@@ -4,7 +4,8 @@ function calendarCtrl($scope, $window, $location) {
 		Basic: 0,
 		Finance: 1,
 		Carrier: 2,
-		Future: 3
+		Future: 3,
+		Private: 4
 	};
 
 	$scope.PeriodType = PeriodType;
@@ -28,7 +29,7 @@ function calendarCtrl($scope, $window, $location) {
 	var periodTypeItems = [];
 
 	for (var prop in PeriodType) {
-		periodTypeItems.push({ id: PeriodType[prop], name: prop, value: true });
+		periodTypeItems.push({ id: PeriodType[prop], name: getTitleForPeriodType(PeriodType[prop]), value: true });
 	}
 
 	$scope.periodTypeItems = periodTypeItems;
@@ -51,6 +52,19 @@ function calendarCtrl($scope, $window, $location) {
 		else
 			$window.location.href = '#/month';
 	};
+
+	function getTitleForPeriodType(periodType) {
+		switch(periodType)
+		{
+			case PeriodType.Basic: return 'Основа';
+			case PeriodType.Finance: return 'Финансы';
+			case PeriodType.Carrier: return 'Карьера';
+			case PeriodType.Future: return 'Планы';
+			case PeriodType.Private: return 'Личное';
+
+			default: return undefined;
+		}
+	}
 
 	function loadPeriods() {
 
