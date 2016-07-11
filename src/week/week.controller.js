@@ -36,15 +36,17 @@ function weekCtrl($scope) {
 	{
 		var bricks = generateEmptyBricksGrid();
 
-		generatePeriods(bricks);
+		var checkedPeriodTypes = getCheckedPeriodTypes();
+
+		generatePeriods(bricks, $scope.list, checkedPeriodTypes);
 
 		generateImportantDates(bricks);
 
 		$scope.bricks = bricks;
 	}
 
-	function generatePeriods(bricks) {
-
+	function getCheckedPeriodTypes()
+	{
 		var checkedPeriodTypes = [];
 
 		if ($scope.periodTypeItems[0].value)
@@ -59,28 +61,37 @@ function weekCtrl($scope) {
 		if ($scope.periodTypeItems[3].value)
 			checkedPeriodTypes.push($scope.PeriodType.Future);
 
-		for(var w = 0; w < $scope.list.length; w++)
+		return checkedPeriodTypes
+	}
+
+	function generatePeriods(bricks, periods, checkedPeriodTypes) {
+		
+		for(var w = 0; w < periods.length; w++)
 		{
-			var week = $scope.list[w];
+			var week = periods[w];
 
 			// Показываем только отмеченные типы
 			if (week.type !== undefined && week.type !== null && checkedPeriodTypes.indexOf(week.type) < 0)
 				continue;
 
+			// Не показываем периоды без даты начала
 			if(week.start === undefined)
 				continue;
 
-			if($scope.withoutFuture && $scope.list[w].start > new Date())
+			// Не показываем периоды в будущем
+			if($scope.withoutFuture && week.start > new Date())
 				continue;
 
-			var startYear = $scope.list[w].start.getFullYear() - $scope.birthday.getFullYear();
-			var weeksToStart = GetWeeksToDate($scope.list[w].start);
+			var startYear = week.start.getFullYear() - $scope.birthday.getFullYear();
+			var weeksToStart = GetWeeksToDate(week.start);
 
-			var end = $scope.list[w].end;
+			var end = week.end;
 
+			// Продляем незаконченные периоды до текущей даты
 			if(end === undefined)
 				end = new Date();
 
+			// Периоды заканчивающиеся в будущем рисуем до текущей даты
 			if($scope.withoutFuture && end > new Date())
 				end = new Date();
 
@@ -91,78 +102,89 @@ function weekCtrl($scope) {
 			{
 				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 				{
+					var brick = bricks[i][j];
+
 					if((startYear == endYear && j >= weeksToStart && j <= weeksToEnd) ||
 						(startYear != endYear && ((i == startYear && j >= weeksToStart) || (i == endYear && j <= weeksToEnd) || (i > startYear && i < endYear))))
 					{
-						if(bricks[i][j].weeks === undefined)
-							bricks[i][j].weeks = [];
+						if(brick.weeks === undefined)
+							brick.weeks = [];
 
-						bricks[i][j].weeks.push(week);
+						brick.weeks.push(week);
 
-						(function(weeks) {
+						// Устанавливаем цвет для ячеек
+						setColor(brick, week, brick.weeks);
 
-							if(+week.start == +week.end)
-							{
-								bricks[i][j].border = '2px solid ' + week.color;
-								return;
-							}
-
-							if(weeks.length == 1)
-							{
-								bricks[i][j].color = week.color;
-								bricks[i][j].size = '100%';
-								return;
-							}
-
-							var colors = [];
-
-							for(var k = 0; k < weeks.length; k++)
-								if(weeks[k].type != $scope.PeriodType.Basic)
-									colors.push(weeks[k].color);
-
-							switch(colors.length)
-							{
-								case 1: 
-									bricks[i][j].color = week.color;
-									bricks[i][j].size = '100%';
-									return;
-								case 2: 
-									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
-									bricks[i][j].size = '100%';
-									return;
-								case 3: 
-									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
-									bricks[i][j].size = '100% 50%, 100% 100%';
-									return;
-								case 4: 
-									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
-									// bricks[i][j].color = '-webkit-linear-gradient(left, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +'), ' +
-									// 	'-webkit-linear-gradient(left, ' + colors[2] +', ' + colors[2] + ' 50%, ' + colors[3] + ' 50%, ' + colors[3] +')';
-									bricks[i][j].size = '100% 50%, 100% 50%';
-									return;
-							}
-						})(bricks[i][j].weeks);
-
-						if(bricks[i][j].title === undefined)
-							bricks[i][j].title = periodToString(week);
-						else
-							bricks[i][j].title = bricks[i][j].title + '\r\n' + periodToString(week);
+						// Устанавливаем всплывающюю подсказку
+						setTitle(brick, week);		
 						
-						bricks[i][j].type = week.type;
+						brick.type = week.type;
 
 						if(week.type == $scope.PeriodType.Basic)
-							bricks[i][j].outline = '2px solid ' + bricks[i][j].color;
+							brick.outline = '2px solid ' + brick.color;
 					}
 				}
 			}
 
-			if(week.type == $scope.PeriodType.Basic)
-			{
-				var averageYearOfPeriod = Math.floor((endYear + startYear)/2);
+			// Устанавливаем сноски для базовых периодов
+			setLabelForBasic(bricks, week, startYear, endYear);
+		}
+	}
 
-				bricks[averageYearOfPeriod].basicLabel = week.text;
-				bricks[averageYearOfPeriod].basicColor = LightenDarkenColor(week.color, -100);
-			}
+	function setLabelForBasic(bricks, week, startYear, endYear)
+	{
+		if(week.type == $scope.PeriodType.Basic)
+		{
+			var averageYearOfPeriod = Math.floor((endYear + startYear)/2);
+
+			bricks[averageYearOfPeriod].labelForBasic = week.text;
+			bricks[averageYearOfPeriod].colorForBasic = LightenDarkenColor(week.color, -100);
+		}
+	}
+
+	function setTitle(brick, week)
+	{
+		if(brick.title === undefined)
+			brick.title = periodToString(week);
+		else
+			brick.title = brick.title + '\r\n' + periodToString(week);
+	}
+
+	function setColor(brick, week, weeks)
+	{
+		if(+week.start == +week.end)
+		{
+			brick.border = '2px solid ' + week.color;
+			return;
+		}
+
+		if(weeks.length == 1)
+		{
+			brick.color = week.color;
+			brick.size = '100%';
+			return;
+		}
+
+		var colors = [];
+
+		for(var k = 0; k < weeks.length; k++)
+			if(weeks[k].type != $scope.PeriodType.Basic)
+				colors.push(weeks[k].color);
+
+		switch(colors.length)
+		{
+			case 1: 
+				brick.color = week.color;
+				return;
+			case 2: 
+				brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
+				return;
+			case 3: 
+				brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
+				return;
+			case 4: 
+				brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
+				return;
 		}
 	}
 

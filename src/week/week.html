@@ -7,5 +7,5 @@
 	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}">
 		<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
 	</div>
-	<div class="label" ng-if="year.basicLabel" ng-style="{ 'color': year.basicColor }">- {{year.basicLabel}}</div>
+	<div class="label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
 </div>
