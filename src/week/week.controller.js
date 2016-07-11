@@ -99,20 +99,18 @@ function weekCtrl($scope) {
 
 						bricks[i][j].weeks.push(week);
 
-						if(bricks[i][j].data === undefined)
-							bricks[i][j].data = {};
-
-						bricks[i][j].data.start = week.start;
-						bricks[i][j].data.end = week.end;
-
-						bricks[i][j].data.text = week.text;
-
 						(function(weeks) {
+
+							if(+week.start == +week.end)
+							{
+								bricks[i][j].border = '2px solid ' + week.color;
+								return;
+							}
 
 							if(weeks.length == 1)
 							{
-								bricks[i][j].data.color = week.color;
-								bricks[i][j].data.size = '100%';
+								bricks[i][j].color = week.color;
+								bricks[i][j].size = '100%';
 								return;
 							}
 
@@ -125,35 +123,35 @@ function weekCtrl($scope) {
 							switch(colors.length)
 							{
 								case 1: 
-									bricks[i][j].data.color = week.color;
-									bricks[i][j].data.size = '100%';
+									bricks[i][j].color = week.color;
+									bricks[i][j].size = '100%';
 									return;
 								case 2: 
-									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
-									bricks[i][j].data.size = '100%';
+									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
+									bricks[i][j].size = '100%';
 									return;
 								case 3: 
-									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
-									bricks[i][j].data.size = '100% 50%, 100% 100%';
+									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
+									bricks[i][j].size = '100% 50%, 100% 100%';
 									return;
 								case 4: 
-									bricks[i][j].data.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
-									// bricks[i][j].data.color = '-webkit-linear-gradient(left, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +'), ' +
+									bricks[i][j].color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
+									// bricks[i][j].color = '-webkit-linear-gradient(left, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +'), ' +
 									// 	'-webkit-linear-gradient(left, ' + colors[2] +', ' + colors[2] + ' 50%, ' + colors[3] + ' 50%, ' + colors[3] +')';
-									bricks[i][j].data.size = '100% 50%, 100% 50%';
+									bricks[i][j].size = '100% 50%, 100% 50%';
 									return;
 							}
 						})(bricks[i][j].weeks);
 
-						if(bricks[i][j].data.title === undefined)
-							bricks[i][j].data.title = periodToString(bricks[i][j].data);
+						if(bricks[i][j].title === undefined)
+							bricks[i][j].title = periodToString(week);
 						else
-							bricks[i][j].data.title = bricks[i][j].data.title + '\r\n' + periodToString(bricks[i][j].data);
+							bricks[i][j].title = bricks[i][j].title + '\r\n' + periodToString(week);
 						
-						bricks[i][j].data.type = week.type;
+						bricks[i][j].type = week.type;
 
 						if(week.type == $scope.PeriodType.Basic)
-							bricks[i][j].data.outline = '2px solid ' + bricks[i][j].data.color;
+							bricks[i][j].outline = '2px solid ' + bricks[i][j].color;
 					}
 				}
 			}
