@@ -9,24 +9,24 @@
 	</div>
 	<div class="life-calendar-label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
 </div>
-<div ng-init="popupedBrick">
-	<div class="popup" dx-popup="{
+<div ng-init="popup">
+	<div dx-popup="{
 		width: 300,
 		height: 250,
 		contentTemplate: 'info',
 		showTitle: true,
 		dragEnabled: true,
 		closeOnOutsideClick: true,
-
 		shading: false,
 		bindingOptions: {
 			visible: 'visiblePopup',
-			title: 'popupedBrick.date'
+			title: 'popup.brick.date'
 		}
 	}">
 		<div data-options="dxTemplate: { name:'info' }">
+			<span>Периоды с прошлой недели:</span>
 			<ul>
-				<li ng-repeat="week in popupedBrick.weeks">{{week.text}}</li>
+				<li ng-repeat="period in popup.prevPeriods">{{period.text}} <a href="javascript:;" ng-click="prolongPeriod(popup.brick, period)">продлить</a></li>
 			</ul>
 		</div>
 	</div>
