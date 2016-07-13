@@ -3,10 +3,20 @@ function weekCtrl($scope) {
 	var WEEK_COUNT_IN_YEAR = 52;
 	var YEAR_COUNT = 90;
 
+	var dateFormatter = Globalize.dateFormatter();
+
 	generateBricks();
 
 	$scope.view.updateCalendar = function() {
 		generateBricks();
+	};
+
+	$scope.popupedBrick = {};
+	$scope.visiblePopup = false;
+
+	$scope.showInfo = function (brick) {
+    	$scope.popupedBrick = brick;
+    	$scope.visiblePopup = true;
 	};
 
 	function generateEmptyBricksGrid()
@@ -22,8 +32,13 @@ function weekCtrl($scope) {
 
 			for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 			{
-				bricks[i][j] = { year: i, brick: j };
+				var date = new Date($scope.birthday.getFullYear() + i, 0, 1);
+				date.setDate(date.getDate() + j * 7);
 
+				var stringDate = dateFormatter(date);
+
+				bricks[i][j] = { year: i, brick: j, date: stringDate, title: stringDate};
+				
 				if(i === 0 && (j + 1) % 5 === 0)
 					bricks[i][j].brickTooltip = j + 1;
 			}
@@ -64,35 +79,67 @@ function weekCtrl($scope) {
 		if ($scope.periodTypeItems[4].value)
 			checkedPeriodTypes.push($scope.PeriodType.Private);
 
-		return checkedPeriodTypes
+		return checkedPeriodTypes;
+	}
+
+	function LifePeriod(text, start, end, color, type)
+	{
+		this.text = text;
+		this.start = start;
+		this.end = end;
+		this.color = color;
+		this.type = type;
+
+		this.test = function(a,b) {
+			return a+b;
+		};
+
+		this.toString = function()
+		{
+			var end = this.end;
+
+			var string = dateFormatter(this.start);
+
+			if (end !== undefined && +this.start != +end)
+				string += ' - ' + dateFormatter(end);
+
+			if(this.text !== undefined)
+				string += ' : ' + this.text;
+
+			return string;
+		};
+	}
+
+	function createLifePeriod(period) {
+		return new LifePeriod(period.text, period.start, period.end, period.color, period.type);
 	}
 
 	function generatePeriods(bricks, periods, checkedPeriodTypes) {
 		
-		for(var w = 0; w < periods.length; w++)
+		for(var p = 0; p < periods.length; p++)
 		{
-			var week = periods[w];
+			var period = createLifePeriod(periods[p]);
 
 			// Показываем только отмеченные типы
-			if (week.type !== undefined && week.type !== null && checkedPeriodTypes.indexOf(week.type) < 0)
+			if (period.type !== undefined && period.type !== null && checkedPeriodTypes.indexOf(period.type) < 0)
 				continue;
 
 			// Не показываем периоды без даты начала
-			if(week.start === undefined)
+			if(period.start === undefined)
 				continue;
 
 			// Не показываем периоды в будущем
-			if($scope.withoutFuture && week.start > new Date())
+			if($scope.withoutFuture && period.start > new Date())
 				continue;
 
-			var startYear = week.start.getFullYear() - $scope.birthday.getFullYear();
-			var weeksToStart = GetWeeksToDate(week.start);
+			var startYear = period.start.getFullYear() - $scope.birthday.getFullYear();
+			var weeksToStart = GetWeeksToDate(period.start);
 
-			var end = week.end;
+			var end = period.end;
 
-			// Продляем незаконченные периоды до текущей даты
+			// Если конечная дата не указана, значит период равен 1 дню.
 			if(end === undefined)
-				end = new Date();
+				end = period.start;
 
 			// Периоды заканчивающиеся в будущем рисуем до текущей даты
 			if($scope.withoutFuture && end > new Date())
@@ -113,57 +160,49 @@ function weekCtrl($scope) {
 						if(brick.weeks === undefined)
 							brick.weeks = [];
 
-						brick.weeks.push(week);
+						brick.weeks.push(period);
 
 						// Устанавливаем цвет для ячеек
-						setColor(brick, week, brick.weeks);
+						setColor(brick, period, brick.weeks);
 
 						// Устанавливаем всплывающюю подсказку
-						setTitle(brick, week);		
+						brick.title = brick.title + '\r\n' + period;
 						
-						brick.type = week.type;
+						brick.type = period.type;
 
-						if(week.type == $scope.PeriodType.Basic)
+						if(period.type == $scope.PeriodType.Basic)
 							brick.outline = '2px solid ' + brick.color;
 					}
 				}
 			}
 
 			// Устанавливаем сноски для базовых периодов
-			setLabelForBasic(bricks, week, startYear, endYear);
+			setLabelForBasic(bricks, period, startYear, endYear);
 		}
 	}
-
-	function setLabelForBasic(bricks, week, startYear, endYear)
+	
+	function setLabelForBasic(bricks, period, startYear, endYear)
 	{
-		if(week.type == $scope.PeriodType.Basic)
+		if(period.type == $scope.PeriodType.Basic)
 		{
 			var averageYearOfPeriod = Math.floor((endYear + startYear)/2);
 
-			bricks[averageYearOfPeriod].labelForBasic = week.text;
-			bricks[averageYearOfPeriod].colorForBasic = LightenDarkenColor(week.color, -100);
+			bricks[averageYearOfPeriod].labelForBasic = period.text;
+			bricks[averageYearOfPeriod].colorForBasic = LightenDarkenColor(period.color, -100);
 		}
 	}
 
-	function setTitle(brick, week)
+	function setColor(brick, period, weeks)
 	{
-		if(brick.title === undefined)
-			brick.title = periodToString(week);
-		else
-			brick.title = brick.title + '\r\n' + periodToString(week);
-	}
-
-	function setColor(brick, week, weeks)
-	{
-		if(+week.start == +week.end)
+		if(period.end === undefined || +period.start == +period.end)
 		{
-			brick.border = '2px solid ' + week.color;
+			brick.border = '2px solid ' + period.color;
 			return;
 		}
 
 		if(weeks.length == 1)
 		{
-			brick.color = week.color;
+			brick.color = period.color;
 			brick.size = '100%';
 			return;
 		}
@@ -177,7 +216,7 @@ function weekCtrl($scope) {
 		switch(colors.length)
 		{
 			case 1: 
-				brick.color = week.color;
+				brick.color = period.color;
 				return;
 			case 2: 
 				brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
@@ -196,28 +235,13 @@ function weekCtrl($scope) {
 		var weeksToBirthday = GetWeeksToDate($scope.birthday);
 		var weeksToToday = GetWeeksToDate(new Date());
 
-		bricks[0][weeksToBirthday].importantTooltip = Globalize.dateFormatter()($scope.birthday) + ' : День рождения';
-		bricks[new Date().getFullYear() - $scope.birthday.getFullYear()][weeksToToday].importantTooltip = Globalize.dateFormatter()(new Date()) + ' : Сегодня';
+		bricks[0][weeksToBirthday].importantTooltip = dateFormatter($scope.birthday) + ' : День рождения';
+		bricks[new Date().getFullYear() - $scope.birthday.getFullYear()][weeksToToday].importantTooltip = dateFormatter(new Date()) + ' : Сегодня';
 	}
 
 	function GetWeeksToDate(date) {
 
 		return Math.floor(Math.abs((date - new Date(date.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000)));
-	}
-
-	function periodToString(period)
-	{
-		var end = period.end;
-
-		if (end === undefined)
-			end = new Date();
-
-		var string = Globalize.dateFormatter()(period.start) + ' - ' + Globalize.dateFormatter()(end);
-
-		if(period.text !== undefined)
-			string += ' : ' + period.text;
-
-		return string;
 	}
 
 	function LightenDarkenColor(col, amt) {

@@ -38,7 +38,7 @@ function calendarCtrl($scope, $window, $location) {
 
 	$scope.lifeCalendarTypeItems = ['Неделя', 'Месяц'];
 
-	if($location.$$path == '' || ~$location.$$path.indexOf('week'))
+	if($location.$$path === '' || ~$location.$$path.indexOf('week'))
 		$scope.lifeCalendarType = 'Неделя';
 	else
 		$scope.lifeCalendarType = 'Месяц';
@@ -92,7 +92,7 @@ function calendarCtrl($scope, $window, $location) {
 
 	$scope.updateCalendar = function() {
 		$scope.view.updateCalendar();	
-	}
+	};
 
 	// Интерфейс для View
 	$scope.view = { updateCalendar: function() {} };

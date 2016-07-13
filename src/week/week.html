@@ -4,8 +4,30 @@
 		'background': brick.color, 
 		'outline': brick.outline,
 		'border': brick.border
-	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}">
+	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}" ng-click="showInfo(brick)">
 		<span class="brick-tooltip" ng-if="brick.year == 0">{{brick.brickTooltip}}</span>
 	</div>
 	<div class="life-calendar-label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
+</div>
+<div ng-init="popupedBrick">
+	<div class="popup" dx-popup="{
+		width: 300,
+		height: 250,
+		contentTemplate: 'info',
+		showTitle: true,
+		dragEnabled: true,
+		closeOnOutsideClick: true,
+
+		shading: false,
+		bindingOptions: {
+			visible: 'visiblePopup',
+			title: 'popupedBrick.date'
+		}
+	}">
+		<div data-options="dxTemplate: { name:'info' }">
+			<ul>
+				<li ng-repeat="week in popupedBrick.weeks">{{week.text}}</li>
+			</ul>
+		</div>
+	</div>
 </div>
