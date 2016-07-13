@@ -5,20 +5,54 @@ function weekCtrl($scope) {
 
 	var dateFormatter = Globalize.dateFormatter();
 
+	$scope.dateFormatter = dateFormatter;
+
 	generateBricks();
 
 	$scope.view.updateCalendar = function() {
+		// Обновляем календарь
+
 		generateBricks();
 	};
 
-	$scope.popupedBrick = {};
-	$scope.visiblePopup = false;
+	$scope.showPopup = function (event, brick) {
+		// Показываем всплывающее окно
 
-	$scope.showInfo = function (brick) {
-    	$scope.popup = { brick: brick };
+		// Удаляем класс brick-popuped с предыдущего элемента
+		if($scope.popup !== undefined && $scope.popup.brick != brick)
+			$($scope.popup.element).removeClass('brick-popuped');
+
+		// Добавляем класс brick-popup, чтобы к элементу можно было спозиционировать всплывающее окно
+		$(event.target).addClass('brick-popuped');
+
+		// Данные для всплывающего окна
+    	$scope.popup = {
+    		brick: brick,
+    		element: event.target,
+    		prevPeriods: getPrevPeriods(brick, $scope.bricks) 
+    	};
+
+    	// Показываем всплывающее окно
     	$scope.visiblePopup = true;
+	};
 
-    	var prevBrick = getPrevBrick(brick, $scope.bricks);
+	$scope.prolongPeriod = function(brick, period) {
+
+		var date = new Date($scope.birthday.getFullYear() + brick.year, 0, 1);
+		date.setDate(date.getDate() + brick.week * 7);
+
+    	period.prolongPeriod(date);
+
+		brick.addPeriod(period);
+
+		$scope.popup.prevPeriods = getPrevPeriods(brick, $scope.bricks);
+
+		$scope.changeCalendarSettings();
+	};
+
+	function getPrevPeriods(brick, bricks) {
+		
+		var prevBrick = getPrevBrick(brick, bricks);
 
     	var prevPeriods = [];
 
@@ -30,21 +64,8 @@ function weekCtrl($scope) {
     			prevPeriods.push(period);
     	}
 
-    	$scope.popup.prevPeriods = prevPeriods;
-	};
-
-	$scope.prolongPeriod = function(brick, period) {
-
-		var date = new Date($scope.birthday.getFullYear() + brick.year, 0, 1);
-		date.setDate(date.getDate() + brick.week * 7);
-
-		period.prolongPeriod(date);
-
-		addPeriodToBrick(brick, period);
-
-		$scope.changeCalendarSettings();
-		// $scope.view.updateCalendar();
-	};
+    	return prevPeriods;
+	}
 
 	function getPrevBrick(brick, bricks) {
 
@@ -70,12 +91,7 @@ function weekCtrl($scope) {
 
 			for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 			{
-				var date = new Date($scope.birthday.getFullYear() + i, 0, 1);
-				date.setDate(date.getDate() + j * 7);
-
-				var stringDate = dateFormatter(date);
-
-				bricks[i][j] = { year: i, week: j, date: stringDate, title: stringDate};
+				bricks[i][j] = new LifeBrick(i, j);
 				
 				if(i === 0 && (j + 1) % 5 === 0)
 					bricks[i][j].brickTooltip = j + 1;
@@ -135,7 +151,7 @@ function weekCtrl($scope) {
 			this.end = date;
 			this.originalPeriod.end = date;
 			this.pos = _getCalendarPosition.apply(this);
-		}
+		};
 
 		this.toString = function()
 		{
@@ -181,6 +197,48 @@ function weekCtrl($scope) {
 		return new LifePeriod(period, period.text, period.start, period.end, period.color, period.type);
 	}
 
+	function LifeBrick(year, week) {
+
+		this.year = year;
+		this.week = week;
+
+		var date = getDateFromCalendarPosition(this.year, this.week);
+
+		this.date = date;
+		this.stringDate = dateFormatter(date);
+		this.title = dateFormatter(date);
+
+		this.periods = [];
+
+		this.addPeriod = function(period) {
+
+			this.periods.push(period);
+
+			// Устанавливаем цвет для ячеек
+			setColor(this, period, this.periods);
+
+			// Устанавливаем всплывающюю подсказку
+			this.title = this.title + '\r\n' + period;
+			
+			this.type = period.type;
+
+			if(period.type == $scope.PeriodType.Basic)
+				this.outline = '2px solid ' + this.color;
+		}
+
+		this.valueOf = function() {
+			return year * week;
+		};
+	}
+
+	function getDateFromCalendarPosition(year, week) {
+		
+		var date = new Date($scope.birthday.getFullYear() + year, 0, 1);
+		date.setDate(date.getDate() + week * 7);
+
+		return date;
+	}
+
 	function generatePeriods(bricks, periods, checkedPeriodTypes) {
 		
 		for(var p = 0; p < periods.length; p++)
@@ -208,7 +266,7 @@ function weekCtrl($scope) {
 					if((period.pos.startYear == period.pos.endYear && j >= period.pos.weeksToStart && j <= period.pos.weeksToEnd) || 
 						(period.pos.startYear != period.pos.endYear && ((i == period.pos.startYear && j >= period.pos.weeksToStart) || (i == period.pos.endYear && j <= period.pos.weeksToEnd) || (i > period.pos.startYear && i < period.pos.endYear))))
 					{
-						addPeriodToBrick(brick, period);
+						brick.addPeriod(period);
 					}
 				}
 			}
@@ -216,25 +274,6 @@ function weekCtrl($scope) {
 			// Устанавливаем сноски для базовых периодов
 			setLabelForBasic(bricks, period);
 		}
-	}
-
-	function addPeriodToBrick(brick, period) {
-
-		if(brick.periods === undefined)
-			brick.periods = [];
-
-		brick.periods.push(period);
-
-		// Устанавливаем цвет для ячеек
-		setColor(brick, period, brick.periods);
-
-		// Устанавливаем всплывающюю подсказку
-		brick.title = brick.title + '\r\n' + period;
-		
-		brick.type = period.type;
-
-		if(period.type == $scope.PeriodType.Basic)
-			brick.outline = '2px solid ' + brick.color;
 	}
 	
 	function setLabelForBasic(bricks, period)

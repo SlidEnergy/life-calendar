@@ -108,3 +108,16 @@ h1 {
 	border-color: #00f;
 	border-width: 2px;
 }
+
+.brick-popup ul {
+	padding: 0px;
+	list-style: none;
+}
+
+.brick-popup .brick {
+	vertical-align: baseline;
+}
+
+.brick-popup .brick-popup-button {
+	float: right;
+}
