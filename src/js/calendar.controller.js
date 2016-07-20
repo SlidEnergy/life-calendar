@@ -94,6 +94,21 @@ function calendarCtrl($scope, $window, $location) {
 		$scope.view.updateCalendar();	
 	};
 
+	$scope.loadSample = function() {
+
+		var periods = JSON.parse(
+			'[{"text":"Детство","start":"1987-07-29T14:00:00.000Z","end":"1994-08-30T14:00:00.000Z","color":"#fff89c","type":0},{"text":"Школа","start":"1994-08-31T14:00:00.000Z","end":"2004-06-24T14:00:00.000Z","color":"#ffe58f","type":0},{"text":"Институт","start":"2004-08-31T14:00:00.000Z","end":"2009-06-24T14:00:00.000Z","color":"#ffcf6e","type":0},{"text":"Карьера","start":"2009-10-31T14:00:00.000Z","end":"2057-07-29T14:00:00.000Z","color":"#fcd1ae","type":0},{"text":"МИАЦ","start":"2009-10-31T14:00:00.000Z","end":"2011-02-19T14:00:00.000Z","color":"#ff9494","type":2},{"text":"LERS","start":"2011-02-20T14:00:00.000Z","end":"2016-07-14T14:00:00.000Z","color":"#ff9442","type":2},{"text":"Трейдинг","start":"2016-04-14T14:00:00.000Z","end":"2016-07-14T14:00:00.000Z","color":"#5ba655","type":1},{"text":"Ремонт квартиры","start":"2014-04-05T14:00:00.000Z","end":"2014-11-05T14:00:00.000Z","color":"#7db2c7","type":1},{"text":"Посуточная аренда","start":"2014-04-14T14:00:00.000Z","end":"2014-11-14T14:00:00.000Z","color":"#eaff00","type":1},{"text":"Питер, контейнеры","start":"2014-06-14T14:00:00.000Z","end":"2014-09-14T14:00:00.000Z","color":"#d396ff","type":1},{"text":"Life Calendar","start":"2016-06-09T14:00:00.000Z","end":"2016-07-07T14:00:00.000Z","color":"#ffef0f","type":null},{"text":"Трип по Азии","start":"2015-11-26T14:00:00.000Z","end":"2016-01-07T14:00:00.000Z","color":"#fff200","type":4},{"text":"Таиланд","start":"2014-11-26T14:00:00.000Z","end":"2014-12-11T14:00:00.000Z","color":"#ffea00","type":4},{"text":"Питер, Сочи","start":"2015-04-27T14:00:00.000Z","end":"2015-05-16T14:00:00.000Z","color":"#ffee00","type":4},{"text":"Пенсия","start":"2057-08-29T14:00:00.000Z","end":"2073-07-30T14:00:00.000Z","color":"#ffbfbf","type":0},{"text":"Сахалин","start":"2016-03-05T14:00:00.000Z","end":"2016-03-08T14:00:00.000Z","color":"#ffee00","type":4},{"text":"Купил машину","start":"2011-11-14T14:00:00.000Z","end":"2011-11-14T14:00:00.000Z","color":"#ff0000","type":4},{"text":"Купил квартиру","start":"2014-04-05T14:00:00.000Z","end":"2014-04-05T14:00:00.000Z","color":"#ff0000","type":1},{"text":"Свадьба","start":"2015-08-27T14:00:00.000Z","end":"2015-08-27T14:00:00.000Z","color":"#ff0000","type":4},{"start":"2014-04-05T14:00:00.000Z","text":"Съехал от родителей","color":"#ff0000","type":4}]',
+			function(key, value) {
+				if (key == 'start' || key == 'end')
+						return new Date(value);
+
+				return value;
+		});
+
+		if (periods)
+			$scope.list = periods;
+	};
+
 	// Интерфейс для View
 	$scope.view = { updateCalendar: function() {} };
 }

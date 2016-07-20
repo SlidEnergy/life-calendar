@@ -17,11 +17,10 @@ h2.group-title {
 	border-bottom: 1px solid #e0e0e0;
 	color: #f05b41;
 	font-weight: normal;
-	font-size: 14px;
-	line-height: normal;
 	font-size: 20px;
+	line-height: normal;
 	margin: 10px 0;
-	padding-bottom: 10px
+	padding-bottom: 10px;
 }
 
 h1 {
@@ -29,7 +28,7 @@ h1 {
 	margin: 10px auto 30px;
 	font-weight: 200;
 	font-size: 30px;
-	text-transform:none;
+	text-transform: none;
 	color: #f05b41;
 }
 
@@ -57,7 +56,7 @@ h1 {
 .life-calendar-label {
 	position: absolute;
 	left: 900px;
-	text-transform: uppercase; 
+	text-transform: uppercase;
 	width: 180px;
 	font-weight: bold;
 	margin-top: -8px;
@@ -66,7 +65,7 @@ h1 {
 #grid-container {
 	margin-top: 10px;
 	width: 100%;
-	border-bottom: 1px solid #d3d3d3
+	border-bottom: 1px solid #d3d3d3;
 }
 
 #apply {
@@ -82,7 +81,6 @@ h1 {
 }
 
 .year {
-
 	height: 17px;
 }
 
@@ -93,7 +91,7 @@ h1 {
 
 .brick-tooltip {
 	position: absolute;
-	top: -17px;	
+	top: -17px;
 }
 
 .brick {
@@ -120,4 +118,72 @@ h1 {
 
 .brick-popup .brick-popup-button {
 	float: right;
+}
+
+.season-line {
+	position: absolute;
+	top: 3px;
+	left: 0px;
+	width: 1px;
+	height: 100%;
+	background: #d5d5d5;
+}
+
+.season-line-1 {
+	left: 154px;
+}
+
+.season-line-2 {
+	left: 375px;
+}
+
+.season-line-3 {
+	left: 596px;
+}
+
+.season-line-4 {
+	left: 817px;
+}
+
+.season-text {
+	position: absolute;
+	top: 850px;
+	left: 0px;
+	transform: rotate(-90deg);
+	font-size: 50px;
+	font-weight: 400;
+	color: #d5d5d5;
+	letter-spacing: 44px;
+	transform-origin: left top;
+}
+
+.season-text-1 {
+	left: 39px;
+}
+
+.season-text-2 {
+	left: 222px;
+}
+
+.season-text-3 {
+	left: 441px;
+}
+
+.season-text-4 {
+	left: 668px;
+}
+
+.season-text-5 {
+	left: 813px;
+}
+
+footer {
+	margin: 10px auto;
+	color: #959595;
+	text-align: center;
+}
+
+#sample-button {
+	float: right;
+	margin-top: 5px;
 }

@@ -16,6 +16,10 @@
 </head>
 <body ng-controller='calendarCtrl'>
 	<div class="form">
+		<div id="sample-button" dx-button="{
+			text: 'Загрузить пример',
+			onClick: loadSample
+		}"></div>
 		<h2 class="group-title">Жизненные периоды</h2>
 		<span>Дата рождения:</span>
 		<div id="birthday" dx-date-box="{
@@ -25,7 +29,7 @@
 			onValueChanged: changeCalendarSettings
 		}"></div>
 		<div id="grid-container" dx-data-grid="{
-			dataSource: list,
+			bindingOptions: { dataSource: 'list' },
 			paging: { enabled: false },
 			groupPanel: { visible: true },
 			editing: {
@@ -107,6 +111,7 @@
 	<h1>Календарь жизни</h1>
 	<div class="life-calendar" ng-view>
 	</div>
+	<footer>Design by SlidEnergy: slidenergy@gmail.com</footer>
 
 	<script src="vendor/jquery.min.js"></script>
 

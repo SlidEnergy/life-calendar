@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 $.when(
 		$.get("vendor/cldr/main/ru/numbers.json"),
@@ -21,30 +21,30 @@ $.when(
 
 	Globalize.locale(navigator.language || navigator.browserLanguage);	
 
-	// var app = angular.module('app', ['calendar']);
-	
-	var calendarModule = angular.module('calendar', ['dx', 'ngRoute'])
-		.config(['$routeProvider', '$locationProvider',
-		  function($routeProvider, $locationProvider) {
-			 $routeProvider
-				.when('/week', { 
-					templateUrl: 'week/week.html',
-					controller: 'weekCtrl',
-					controllerAs: 'week'
-				})
-				.when('/month', {
-					templateUrl: 'month/month.html',
-					controller: 'monthCtrl',
-					controllerAs: 'month'
-				});
-
-			$routeProvider.otherwise({redirectTo: '/week'});
-
-			 // $locationProvider.html5Mode(true);
-		}])
-		.controller('calendarCtrl', [ '$scope', '$window', '$location', calendarCtrl])
-		.controller('weekCtrl', [ '$scope', weekCtrl])
-		.controller('monthCtrl', [ '$scope', monthCtrl]);
-
-		angular.bootstrap($('body'), ['calendar']);
+	angular.bootstrap($('body'), ['calendar']);
 });
+
+// var app = angular.module('app', ['calendar']);
+
+var calendarModule = angular.module('calendar', ['dx', 'ngRoute'])
+	.config(['$routeProvider', '$locationProvider',
+	  function($routeProvider, $locationProvider) {
+		 $routeProvider
+			.when('/week', { 
+				templateUrl: 'week/week.html',
+				controller: 'weekCtrl',
+				controllerAs: 'week'
+			})
+			.when('/month', {
+				templateUrl: 'month/month.html',
+				controller: 'monthCtrl',
+				controllerAs: 'month'
+			});
+
+		$routeProvider.otherwise({redirectTo: '/week'});
+
+		 // $locationProvider.html5Mode(true);
+	}])
+	.controller('calendarCtrl', [ '$scope', '$window', '$location', calendarCtrl])
+	.controller('weekCtrl', [ '$scope', weekCtrl])
+	.controller('monthCtrl', [ '$scope', monthCtrl]);
