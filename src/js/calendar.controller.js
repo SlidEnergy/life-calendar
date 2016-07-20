@@ -22,7 +22,6 @@ function calendarCtrl($scope, $window, $location) {
 			onValueChanged: function (e) { cellInfo.setValue(e.value); }});
 	};
 
-	$scope.birthday = new Date(1987, 6, 30);
 	$scope.birthdayMin = new Date(1900, 0, 1);
 	$scope.birthdayMax = new Date();
 
@@ -78,11 +77,18 @@ function calendarCtrl($scope, $window, $location) {
 
 		if (periods)
 			$scope.list = periods;
+
+		var birthday = JSON.parse(localStorage.getItem('Birthday'), function(key, value) { return new Date(value); });
+
+		if(birthday)
+			$scope.birthday = birthday;
 	}
 
 	function savePeriods() {
 
 		localStorage.setItem('Periods', JSON.stringify($scope.list));
+
+		localStorage.setItem('Birthday', JSON.stringify($scope.birthday));
 	}
 
 	$scope.changeCalendarSettings = function() {
@@ -107,6 +113,11 @@ function calendarCtrl($scope, $window, $location) {
 
 		if (periods)
 			$scope.list = periods;
+
+		var birthday = JSON.parse(localStorage.getItem('Birthday'), function(key, value) { return new Date(value); });
+
+		if(birthday)
+			$scope.birthday = birthday;
 	};
 
 	// Интерфейс для View
