@@ -44,7 +44,4 @@ var calendarModule = angular.module('calendar', ['dx', 'ngRoute'])
 		$routeProvider.otherwise({redirectTo: '/week'});
 
 		 // $locationProvider.html5Mode(true);
-	}])
-	.controller('calendarCtrl', [ '$scope', '$window', '$location', calendarCtrl])
-	.controller('weekCtrl', [ '$scope', weekCtrl])
-	.controller('monthCtrl', [ '$scope', monthCtrl]);
+	}]);

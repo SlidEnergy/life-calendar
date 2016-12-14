@@ -20,8 +20,8 @@
 		'border': brick.border
 	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}" ng-click="showPopup($event, brick)">
 	</div>
+	<div class="life-calendar-single-date-label" ng-if="year.labelForSingleDate" ng-init="dateLabelInit()" ng-style="{ 'color': year.colorForSingleDate }">- {{year.labelForSingleDate}}</div>
 	<div class="life-calendar-label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
-	<div class="life-calendar-single-date-label" ng-if="year.labelForSingleDate" ng-style="{ 'color': year.colorForSingleDate }">- {{year.labelForSingleDate}}</div>
 </div>
 <div class="brick-popup" ng-init="popup">
 	<div dx-popup="{
