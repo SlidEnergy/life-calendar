@@ -87,7 +87,7 @@ function weekCtrl($scope) {
 			bricks[i] = [];
 
 			if(i % 5 === 0)
-				bricks[i].yearTooltip = i;
+				bricks[i].yearTooltip = ($scope.birthday.getFullYear() + i) + 'г. (' + i + 'лет)';
 
 			for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 			{
@@ -273,6 +273,9 @@ function weekCtrl($scope) {
 
 			// Устанавливаем сноски для базовых периодов
 			setLabelForBasic(bricks, period);
+
+			// Устанавливаем сноски для одиночных дат
+			setLabelForSingleDate(bricks, period);
 		}
 	}
 	
@@ -284,6 +287,15 @@ function weekCtrl($scope) {
 
 			bricks[averageYearOfPeriod].labelForBasic = period.text;
 			bricks[averageYearOfPeriod].colorForBasic = LightenDarkenColor(period.color, -100);
+		}
+	}
+
+	function setLabelForSingleDate(bricks, period)
+	{
+		if(period.type != $scope.PeriodType.Basic && +period.start == +period.end)
+		{
+			bricks[period.pos.startYear].labelForSingleDate = period.text;
+			bricks[period.pos.startYear].colorForSingleDate = LightenDarkenColor(period.color, -100);
 		}
 	}
 
