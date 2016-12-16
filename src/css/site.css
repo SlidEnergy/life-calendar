@@ -61,13 +61,15 @@ h1 {
 	font-weight: bold;
 	margin-top: -8px;
 }
-
-.life-calendar-single-date-label {
+.left-period-label-container {
 	position: absolute;
 	left: -350px;
 	width: 250px;
+}
+
+.life-calendar-left-period-label {
+	margin: 10px 0;
 	font-weight: bold;
-	margin-top: -23px;
 }
 
 #grid-container {

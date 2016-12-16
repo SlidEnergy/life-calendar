@@ -12,6 +12,9 @@
 <div class="season-label season-text-3">Лето</div>
 <div class="season-label season-text-4">Осень</div>
 <div class="season-label season-text-5">Зима</div>
+<div class="left-period-label-container" ng-style="{ 'margin-top': (leftPeriodLabels[0].period.pos.startYear * 15) + 'px' }">
+	<div class="life-calendar-left-period-label" ng-repeat="label in leftPeriodLabels" ng-style="{ 'color': label.color }">- {{label.text}}</div>
+</div>
 <div class="year" ng-repeat="year in bricks">
 	<span class="year-tooltip">{{year.yearTooltip}}</span>
 	<div class="brick" ng-repeat="brick in year" ng-style="{
@@ -20,7 +23,6 @@
 		'border': brick.border
 	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}" ng-click="showPopup($event, brick)">
 	</div>
-	<div class="life-calendar-single-date-label" ng-if="year.labelForSingleDate" ng-init="dateLabelInit()" ng-style="{ 'color': year.colorForSingleDate }">- {{year.labelForSingleDate}}</div>
 	<div class="life-calendar-label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
 </div>
 <div class="brick-popup" ng-init="popup">

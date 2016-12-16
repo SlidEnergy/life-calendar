@@ -16,6 +16,7 @@
 		$scope.showPopup = showPopup;
 		$scope.prolongPeriod = prolongPeriod;
 		$scope.view.updateCalendar = updateCalendar;
+		$scope.leftPeriodLabels = [];
 
 		generateBricks();
 
@@ -119,7 +120,7 @@
 
 			generatePeriods(bricks, $scope.list, checkedPeriodTypes);
 
-			generateImportantDates(bricks);
+			addTodayAndBirthdayToBricks(bricks);
 
 			$scope.bricks = bricks;
 		}
@@ -152,6 +153,8 @@
 
 		function generatePeriods(bricks, periods, checkedPeriodTypes) {
 			
+			var leftPeriodLabels = [];
+
 			for(var p = 0; p < periods.length; p++)
 			{
 				var period = createLifePeriod(periods[p]);
@@ -182,12 +185,20 @@
 					}
 				}
 
-				// Устанавливаем сноски для базовых периодов
+				// Устанавливаем сноски справа для базовых периодов.
 				setLabelForBasic(bricks, period);
 
-				// Устанавливаем сноски для одиночных дат
-				setLabelForSingleDate(bricks, period);
+				// Добавляем для одиночных дат сноски слева в отдельный массив.
+				if(period.type != $scope.PeriodType.Basic && +period.start == +period.end)
+					leftPeriodLabels.push({ text: period.text, color: LightenDarkenColor(period.color, -100), period: period});
 			}
+
+			// Сортируем сноски слева
+			leftPeriodLabels.sort(function(a, b) {
+    			return +a.period.start - +b.period.start;
+			});
+
+			$scope.leftPeriodLabels = leftPeriodLabels;
 		}
 		
 		function setLabelForBasic(bricks, period)
@@ -201,16 +212,7 @@
 			}
 		}
 
-		function setLabelForSingleDate(bricks, period)
-		{
-			if(period.type != $scope.PeriodType.Basic && +period.start == +period.end)
-			{
-				bricks[period.pos.startYear].labelForSingleDate = period.text;
-				bricks[period.pos.startYear].colorForSingleDate = LightenDarkenColor(period.color, -100);
-			}
-		}
-
-		function generateImportantDates(bricks) {
+		function addTodayAndBirthdayToBricks(bricks) {
 
 			var weeksToBirthday = GetWeeksToDate($scope.birthday);
 			var weeksToToday = GetWeeksToDate(new Date());
