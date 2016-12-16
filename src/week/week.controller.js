@@ -2,9 +2,9 @@
 	'use strict';
 
 	angular.module('calendar')
-		.controller('weekCtrl', [ '$scope', weekCtrl]);
+		.controller('weekCtrl', [ '$scope', 'LifePeriod', 'LifeBrick', weekCtrl]);
 
-	function weekCtrl($scope) {
+	function weekCtrl($scope, LifePeriod, LifeBrick) {
 
 		var WEEK_COUNT_IN_YEAR = 52;
 		var YEAR_COUNT = 90;
@@ -101,7 +101,7 @@
 
 				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 				{
-					bricks[i][j] = new LifeBrick(i, j);
+					bricks[i][j] = new LifeBrick(i, j, $scope.birthday, $scope.dateFormatter);
 					
 					if(i === 0 && (j + 1) % 5 === 0)
 						bricks[i][j].brickTooltip = j + 1;
@@ -146,107 +146,8 @@
 			return checkedPeriodTypes;
 		}
 
-		function LifePeriod(originalPeriod, text, start, end, color, type)
-		{
-			this.originalPeriod = originalPeriod;
-			this.text = text;
-			this.start = start;
-			this.end = end;
-			this.color = color;
-			this.type = type;
-
-			this.pos = _getCalendarPosition.apply(this);
-
-			this.prolongPeriod = function(date) {
-				this.end = date;
-				this.originalPeriod.end = date;
-				this.pos = _getCalendarPosition.apply(this);
-			};
-
-			this.toString = function()
-			{
-				var end = this.end;
-
-				var string = dateFormatter(this.start);
-
-				if (end !== undefined && +this.start != +end)
-					string += ' - ' + dateFormatter(end);
-
-				if(this.text !== undefined)
-					string += ' : ' + this.text;
-
-				return string;
-			};
-
-			function _getCalendarPosition() {
-
-				if(this.start === undefined)
-					return;
-
-				var startYear = this.start.getFullYear() - $scope.birthday.getFullYear();
-				var weeksToStart = GetWeeksToDate(this.start);
-
-				var end = this.end;
-
-				// Если конечная дата не указана, значит период равен 1 дню.
-				if(end === undefined)
-					end = this.start;
-
-				// Периоды заканчивающиеся в будущем рисуем до текущей даты
-				if($scope.withoutFuture && end > new Date())
-					end = new Date();
-
-				var endYear = end.getFullYear() - $scope.birthday.getFullYear();
-				var weeksToEnd = GetWeeksToDate(end);
-
-				return { startYear: startYear, weeksToStart: weeksToStart, endYear: endYear, weeksToEnd: weeksToEnd };
-			}
-		}
-
 		function createLifePeriod(period) {
-			return new LifePeriod(period, period.text, period.start, period.end, period.color, period.type);
-		}
-
-		function LifeBrick(year, week) {
-
-			this.year = year;
-			this.week = week;
-
-			var date = getDateFromCalendarPosition(this.year, this.week);
-
-			this.date = date;
-			this.stringDate = dateFormatter(date);
-			this.title = dateFormatter(date);
-
-			this.periods = [];
-
-			this.addPeriod = function(period) {
-
-				this.periods.push(period);
-
-				// Устанавливаем цвет для ячеек
-				setColor(this, period, this.periods);
-
-				// Устанавливаем всплывающюю подсказку
-				this.title = this.title + '\r\n' + period;
-				
-				this.type = period.type;
-
-				if(period.type == $scope.PeriodType.Basic)
-					this.outline = '2px solid ' + this.color;
-			};
-
-			this.valueOf = function() {
-				return year * week;
-			};
-		}
-
-		function getDateFromCalendarPosition(year, week) {
-			
-			var date = new Date($scope.birthday.getFullYear() + year, 0, 1);
-			date.setDate(date.getDate() + week * 7);
-
-			return date;
+			return new LifePeriod(period, period.text, period.start, period.end, period.color, period.type, $scope.birthday, $scope.withoutFuture, dateFormatter);
 		}
 
 		function generatePeriods(bricks, periods, checkedPeriodTypes) {
@@ -306,44 +207,6 @@
 			{
 				bricks[period.pos.startYear].labelForSingleDate = period.text;
 				bricks[period.pos.startYear].colorForSingleDate = LightenDarkenColor(period.color, -100);
-			}
-		}
-
-		function setColor(brick, period, periods)
-		{
-			if(period.end === undefined || +period.start == +period.end)
-			{
-				brick.border = '2px solid ' + period.color;
-				return;
-			}
-
-			if(periods.length == 1)
-			{
-				brick.color = period.color;
-				brick.size = '100%';
-				return;
-			}
-
-			var colors = [];
-
-			for(var k = 0; k < periods.length; k++)
-				if(periods[k].type != $scope.PeriodType.Basic)
-					colors.push(periods[k].color);
-
-			switch(colors.length)
-			{
-				case 1: 
-					brick.color = period.color;
-					return;
-				case 2: 
-					brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 50%, ' + colors[1] + ' 50%, ' + colors[1] +')';
-					return;
-				case 3: 
-					brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 33%, ' + colors[1] + ' 33%, ' + colors[1] +' 66%, ' + colors[2] + ' 66%, ' + colors[2] + ')';
-					return;
-				case 4: 
-					brick.color = '-webkit-linear-gradient(top, ' + colors[0] +', ' + colors[0] + ' 25%, ' + colors[1] + ' 25%, ' + colors[1] +' 50%, ' + colors[2] + ' 50%, ' + colors[2] + ' 75%, ' + colors[3] + ' 75%, ' + colors[3] + ')';
-					return;
 			}
 		}
 
