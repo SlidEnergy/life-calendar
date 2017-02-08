@@ -15,7 +15,7 @@
 <div class="left-period-label-container" ng-style="{ 'margin-top': (leftPeriodLabels[0].period.pos.startYear * 15) + 'px' }">
 	<div class="life-calendar-left-period-label" ng-repeat="label in leftPeriodLabels" ng-style="{ 'color': label.color }">- {{label.text}}</div>
 </div>
-<div class="year" ng-repeat="year in bricks">
+<div class="year" ng-class="{'current-year': year.currentYear}" ng-repeat="year in bricks">
 	<span class="year-tooltip">{{year.yearTooltip}}</span>
 	<div class="brick" ng-repeat="brick in year" ng-style="{
 		'background': brick.color, 

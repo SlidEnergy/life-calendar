@@ -7,7 +7,7 @@
 	function weekCtrl($scope, LifePeriod, LifeBrick) {
 
 		var WEEK_COUNT_IN_YEAR = 52;
-		var YEAR_COUNT = 90;
+		var YEAR_COUNT = 65;
 
 		var dateFormatter = Globalize.dateFormatter();
 
@@ -97,8 +97,15 @@
 			{
 				bricks[i] = [];
 
-				if(i % 5 === 0)
+				var currentAge = new Date().getFullYear() - $scope.birthday.getFullYear();
+
+				// Подписываем каждый пятый год или текущий год
+				if(i % 5 === 0 || i == currentAge)
 					bricks[i].yearTooltip = ($scope.birthday.getFullYear() + i) + 'г. (' + i + 'лет)';
+
+				// Подсвечиваем текущий год
+				if(i == currentAge)
+					bricks[i].currentYear = true;
 
 				for(var j = 0; j < WEEK_COUNT_IN_YEAR; j++)
 				{

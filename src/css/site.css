@@ -96,7 +96,7 @@ h1 {
 
 .year-tooltip {
 	position: absolute;
-	left: -90px;
+	left: -92px;
 	color: #a3a3a3;
 }
 
@@ -114,8 +114,34 @@ h1 {
 }
 
 .important-brick {
-	border-color: #00f;
-	border-width: 2px;
+	border-color: #00f !important;
+	border-width: 2px !important;
+}
+
+.current-year .brick {
+	border: 1px solid #99d;
+}
+
+.current-year .year-tooltip {
+	color: #444;
+}
+
+.current-year:before {
+	content: '';
+	position: absolute;
+	left: -5px;
+	margin-top: 5px;
+	border: 5px solid transparent;
+	border-left: 6px solid #00f;
+}
+
+.current-year:after {
+	content: '';
+	position: absolute;
+	right: 8px;
+	margin-top: 5px;
+	border: 5px solid transparent;
+	border-right: 6px solid #00f;
 }
 
 .brick-popup ul {
