@@ -18,7 +18,11 @@
 		$scope.view.updateCalendar = updateCalendar;
 		$scope.leftPeriodLabels = [];
 
-		generateBricks();
+		$(document).ready(function() {
+			$.when($scope.view.dataLoaded).done(function() {
+				generateBricks();
+			});
+		});
 
 		function updateCalendar() {
 			// Обновляем календарь

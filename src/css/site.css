@@ -61,6 +61,13 @@ h1 {
 	font-weight: bold;
 	margin-top: -8px;
 }
+
+@media only screen and (max-width : 1280px) {
+	.left-period-label-container {
+		display: none;
+	}
+}
+
 .left-period-label-container {
 	position: absolute;
 	left: -350px;
@@ -78,7 +85,7 @@ h1 {
 	border-bottom: 1px solid #a3a3a3;
 }
 
-#apply {
+#apply-button {
 	display: block;
 	margin-top: 50px;
 }
@@ -220,9 +227,11 @@ footer {
 	text-align: center;
 }
 
-#sample-button {
+.auth-button {
 	float: right;
-	margin-top: 5px;
+	margin-top: 13px;
+	margin-right: 10px;
+	display: none;
 }
 
 .season-label {
@@ -230,3 +239,26 @@ footer {
 	top: -20px;
 	color: #a3a3a3;
 }
+
+.signup-popup p:nth-child(n+2) {
+	margin-bottom: 5px;
+	margin-top: 15px;
+	margin-left: 2px;
+}
+
+.signup-popup .signup-button {
+	position: absolute;
+	bottom: 20px;
+	width: 100px;
+	margin-left: 0px;
+}
+
+.signup-popup .signup-button:nth-last-child(1) {
+	margin-left: 20px;
+	left: 120px;
+}
+
+.signup-popup .signup-button:nth-of-type(2) {
+	left: 120px;
+}
+

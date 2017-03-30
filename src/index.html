@@ -16,10 +16,7 @@
 </head>
 <body ng-controller='calendarCtrl'>
 	<div class="form">
-		<div id="sample-button" dx-button="{
-			text: 'Загрузить пример',
-			onClick: loadSample
-		}"></div>
+		<span class="auth-button" ng-class="{'show': isAuthorized == false}">Вы можете <a href="javascript:;" ng-click="signupAndLoadData()" >загрузить</a> ваши данные с сервера.</span>
 		<h2 class="group-title">Жизненные периоды</h2>
 		<span>Дата рождения:</span>
 		<div id="birthday" dx-date-box="{
@@ -103,15 +100,40 @@
 			onValueChanged: changeCalendarView
 		}"></div><br>
 		<a href="http://bl.ocks.org/mbostock/4063318">Календарь по дням можно сделать как тут.</a>
-		<div id="apply" dx-button="{
+		<div id="apply-button" dx-button="{
 			text: 'Применить',
 			onClick: updateCalendar
 		}"></div>
+		<br>
+		<div style="display: none;" ng-class="{'show': isAuthorized == false}">Вы можете <a href="javascript:;" ng-click="signupAndSaveCalendar()">сохранить</a> ваши данные на сервере, чтобы иметь к ним доступ с любого устройства.</div>
 	</div>
 	<h1>Календарь жизни</h1>
 	<div class="life-calendar" ng-view>
 	</div>
 	<footer>Design by SlidEnergy: slidenergy@gmail.com</footer>
+	<div ng-cloak class="signup-popup" dx-popup="{
+		width: 500,
+		height: 400,
+		title: 'Введите свои данные',
+		bindingOptions: { visible: 'isSignupPopupVisible'}
+	}">
+		<p>Чтобы иметь возможность сохранять данные на сервере и иметь к ним доступ с любого устройства, введите ниже email и пароль.</p>
+		<br>
+		<span style="color: red;">{{signupErrorMessage}}</span>
+		<p>Email:</p>
+		<div dx-text-box="{
+			placeholder: 'Email',
+			bindingOptions: { value: '$parent.signupEmail' }
+		}"></div>
+		<p>Пароль:</p>
+		<div dx-text-box="{
+			mode: 'password',
+			placeholder: 'Пароль',
+			bindingOptions: { value: '$parent.signupPassword' }
+		}"></div><br>
+		<div class="signup-button" dx-button="{text: 'Ok', onClick: signupOk_Click }"></div>
+		<div class="signup-button" dx-button="{text: 'Отмена', onClick: signupCancel_Click }"></div>
+	</div>
 
 	<script src="vendor/jquery.min.js"></script>
 
@@ -127,6 +149,12 @@
 	<script src="vendor/angular/angular.min.js"></script>
 	<script src="vendor/angular/angular-sanitize.min.js"></script>
 	<script src="vendor/angular/angular-route.min.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-database.js"></script>
+	<!-- AngularFire -->
+	<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
 
 	<script src="vendor/devextreme-web/js/dx.web.js"></script>
 	<script src="vendor/devextreme-web/js/localization/dx.web.ru.js"></script>

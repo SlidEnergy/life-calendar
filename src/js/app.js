@@ -22,12 +22,22 @@
 
 		Globalize.locale(navigator.language || navigator.browserLanguage);	
 
-		angular.bootstrap($('body'), ['calendar']);
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyAHmgNfe-NnvRY5MD08-tT8LWz8Te-fzY4",
+			authDomain: "lifecontrol-a87ca.firebaseapp.com",
+			databaseURL: "https://lifecontrol-a87ca.firebaseio.com",
+			storageBucket: "lifecontrol-a87ca.appspot.com",
+			messagingSenderId: "1054189079504"
+		};
+  		firebase.initializeApp(config);
+
+  		angular.bootstrap($('body'), ['calendar']);
 	});
 
 	// var app = angular.module('app', ['calendar']);
 
-	var calendarModule = angular.module('calendar', ['dx', 'ngRoute'])
+	var calendarModule = angular.module('calendar', ['dx', 'ngRoute', 'firebase'])
 		.config(['$routeProvider', '$locationProvider',
 		  function($routeProvider, $locationProvider) {
 			 $routeProvider
