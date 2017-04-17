@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="googlebot" content="noindex, nofollow">
+	<title>Календарь жизни</title>
+	
+	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-theme.min.css">
+
+	<link href="vendor/devextreme-web/css/dx.common.css" rel="stylesheet" />
+	<link href="vendor/devextreme-web/css/dx.light.css" rel="stylesheet" />
+
+	<link href="css/site.css" rel="stylesheet" />
+</head>
+<body ng-controller='calendarCtrl'>
+	<div class="form">
+		<span class="auth-button" ng-class="{'show': isAuthorized == false}">Вы можете <a href="javascript:;" ng-click="signupAndLoadData()" >загрузить</a> ваши данные с сервера.</span>
+		<span class="auth-button" ng-class="{'show': isAuthorized == true}">Ваши данные синхронизируются с сервером.</span>
+		<h2 class="group-title">Жизненные периоды</h2>
+		<span>Дата рождения:</span>
+		<div id="birthday" dx-date-box="{
+			bindingOptions: { value: 'birthday' },
+			max: birthdayMax,
+			min: birthdayMin,
+			onValueChanged: changeCalendarSettings
+		}"></div>
+		<div id="grid-container" dx-data-grid="{
+			bindingOptions: { dataSource: 'list' },
+			paging: { enabled: false },
+			groupPanel: { visible: true },
+			editing: {
+				mode: 'cell',
+				allowUpdating: true,
+				allowDeleting: true,
+				allowAdding: true
+			},
+			onRowUpdated: changeCalendarSettings,
+			onRowRemoved: changeCalendarSettings,
+			onRowInserted: changeCalendarSettings,
+			columns: [{
+				dataField: 'start',
+				caption: 'Начало',
+				dataType: 'date',
+				width: 100
+				},
+				{
+					dataField: 'end',
+					caption: 'Конец',
+					dataType: 'date',
+					width: 100
+				},
+				{
+					dataField: 'text',
+					caption: 'Название'
+				},
+				{
+					dataField: 'color',
+					caption: 'Цвет',
+					dataType: 'color',
+					width: 130,
+					cellTemplate: cellTemplate,
+					editCellTemplate: editCellTemplate
+				},
+				{
+					dataField: 'type',
+					caption: 'Тип',
+					width: 100,
+					groupIndex: 0,
+					showWhenGrouped: true,
+					lookup: {
+							dataSource: periodTypeItems,
+							displayExpr: 'name',
+							valueExpr: 'id'
+					}
+				}
+			]
+		}"></div>
+		<h2 class="group-title">Настройки отображения</h2>
+		<span class="label">Отображать следующие типы периодов:</span>
+		<div id="types" ng-repeat="type in periodTypeItems">
+			<div class="checkbox" id="{type.name + 'checkbox'}" dx-check-box="{
+				bindingOptions: { value: 'type.value' },
+				text: type.name,
+				onValueChanged: changeCalendarSettings
+			}"></div>
+		</div>
+		<br>
+		<div class="checkbox" id="without-future" dx-check-box="{
+			bindingOptions: { value: 'withoutFuture' },
+			text: 'Не показывать будущие периоды',
+			onValueChanged: changeCalendarSettings
+		}"></div>
+		<br>
+		<span class="label">Вид календаря:</span>
+		<div id="life-calendar-type" dx-radio-group="{
+			items: lifeCalendarTypeItems,
+			bindingOptions: { value: 'lifeCalendarType' },
+			layout: 'horizontal',
+			onValueChanged: changeCalendarView
+		}"></div><br>
+		<a href="http://bl.ocks.org/mbostock/4063318">Календарь по дням можно сделать как тут.</a>
+		<div id="apply-button" dx-button="{
+			text: 'Применить',
+			onClick: updateCalendar
+		}"></div>
+		<br>
+		<div style="display: none;" ng-class="{'show': isAuthorized == false}">Вы можете <a href="javascript:;" ng-click="signupAndSaveCalendar()">сохранить</a> ваши данные на сервере, чтобы иметь к ним доступ с любого устройства.</div>
+	</div>
+	<h1>Календарь жизни</h1>
+	<div class="life-calendar" ng-view>
+	</div>
+	<footer>Design by SlidEnergy: slidenergy@gmail.com</footer>
+	<div ng-cloak class="signup-popup" dx-popup="{
+		width: 500,
+		height: 400,
+		title: 'Введите свои данные',
+		bindingOptions: { visible: 'isSignupPopupVisible'}
+	}">
+		<p>Чтобы иметь возможность сохранять данные на сервере и иметь к ним доступ с любого устройства, введите ниже email и пароль.</p>
+		<br>
+		<span style="color: red;">{{signupErrorMessage}}</span>
+		<p>Email:</p>
+		<div dx-text-box="{
+			placeholder: 'Email',
+			bindingOptions: { value: '$parent.signupEmail' }
+		}"></div>
+		<p>Пароль:</p>
+		<div dx-text-box="{
+			mode: 'password',
+			placeholder: 'Пароль',
+			bindingOptions: { value: '$parent.signupPassword' }
+		}"></div><br>
+		<div class="signup-button" dx-button="{text: 'Ok', onClick: signupOk_Click }"></div>
+		<div class="signup-button" dx-button="{text: 'Отмена', onClick: signupCancel_Click }"></div>
+	</div>
+
+	<script src="vendor/jquery.min.js"></script>
+
+	<script src="vendor/cldr.js"></script>
+	<script src="vendor/cldr/event.js"></script>
+	<script src="vendor/cldr/supplemental.js"></script>
+
+	<script src="vendor/globalize.js"></script>
+	<script src="vendor/globalize/message.js"></script>
+	<script src="vendor/globalize/number.js"></script>
+	<script src="vendor/globalize/date.js"></script>
+
+	<script src="vendor/angular/angular.min.js"></script>
+	<script src="vendor/angular/angular-sanitize.min.js"></script>
+	<script src="vendor/angular/angular-route.min.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-database.js"></script>
+	<!-- AngularFire -->
+	<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+
+	<script src="vendor/devextreme-web/js/dx.web.js"></script>
+	<script src="vendor/devextreme-web/js/localization/dx.web.ru.js"></script>
+	
+	<script src="js/app.js"></script>
+	<script src="models/lifePeriod.js"></script>
+	<script src="models/lifeBrick.js"></script>
+	<script src="js/calendar.controller.js"></script>
+	<script src="week/week.controller.js"></script>
+	<script src="month/month.controller.js"></script>
+</body>
+</html>

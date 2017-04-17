@@ -1,0 +1,54 @@
+<div class="season-line season-line-1"></div>
+<div class="season-line season-line-2"></div>
+<div class="season-line season-line-3"></div>
+<div class="season-line season-line-4"></div>
+<!-- <div class="season-text season-text-1">Зима</div>
+<div class="season-text season-text-2">Весна</div>
+<div class="season-text season-text-3">Лето</div>
+<div class="season-text season-text-4">Осень</div>
+<div class="season-text season-text-5">Зима</div> -->
+<div class="season-label season-text-1">Зима</div>
+<div class="season-label season-text-2">Весна</div>
+<div class="season-label season-text-3">Лето</div>
+<div class="season-label season-text-4">Осень</div>
+<div class="season-label season-text-5">Зима</div>
+<div class="left-period-label-container" ng-style="{ 'margin-top': (leftPeriodLabels[0].period.pos.startYear * 15) + 'px' }">
+	<div class="life-calendar-left-period-label" ng-repeat="label in leftPeriodLabels" ng-style="{ 'color': label.color }">- {{label.text}}</div>
+</div>
+<div class="year" ng-class="{'current-year': year.currentYear}" ng-repeat="year in bricks">
+	<span class="year-tooltip">{{year.yearTooltip}}</span>
+	<div class="brick" ng-repeat="brick in year" ng-style="{
+		'background': brick.color, 
+		'outline': brick.outline,
+		'border': brick.border
+	}" ng-class="{'important-brick': brick.importantTooltip}" ng-attr-title="{{brick.title}}" ng-click="showPopup($event, brick)">
+	</div>
+	<div class="life-calendar-label" ng-if="year.labelForBasic" ng-style="{ 'color': year.colorForBasic }">- {{year.labelForBasic}}</div>
+</div>
+<div class="brick-popup" ng-init="popup">
+	<div dx-popup="{
+		width: 500,
+		height: 300,
+		contentTemplate: 'info',
+		showTitle: true,
+		dragEnabled: true,
+		closeOnOutsideClick: true,
+		shading: false,
+		position: {
+			of: '.brick-popuped',
+			my: 'top',
+			at: 'bottom'
+		},
+		bindingOptions: {
+			visible: 'visiblePopup',
+			title: 'popup.brick.stringDate'
+		}
+	}">
+		<div class="brick-popup" data-options="dxTemplate: { name:'info' }">
+			<span>Периоды с прошлой недели:</span>
+			<ul>
+				<li ng-repeat="period in popup.prevPeriods"><span class="brick" ng-style="{ 'background': period.color }"></span> {{period.text + ' (начало с ' + dateFormatter(period.start) + ')'}} <a class="brick-popup-button" href="javascript:;" ng-click="prolongPeriod(popup.brick, period)">продлить</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

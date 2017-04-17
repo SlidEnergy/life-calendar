@@ -1,0 +1,29 @@
+{
+  "name": "life-calendar",
+  "homepage": "https://github.com/SlidEnergy/life-calendar",
+  "authors": [
+    "slidenergy@gmail.com"
+  ],
+  "description": "You life in weeks",
+  "main": "",
+  "keywords": [
+    "life",
+    "calendar",
+    "week"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "devextreme-web": "^16.1.4",
+    "angular": "~1.4.1",
+    "angular-sanitize": "~1.4.1",
+    "angular-route": "~1.4.1"
+  }
+}

@@ -1,0 +1,264 @@
+﻿body {
+	padding: 0px;
+	margin: 0px;
+	font-family: 'Helvetica Neue','Segoe UI',Helvetica,Verdana,sans-serif;
+}
+
+.form {
+	display: inline-block;
+	padding: 0px 10px 20px;
+	vertical-align: top;
+	border-bottom: 2px solid #e0e0e0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+h2.group-title {
+	border-bottom: 1px solid #e0e0e0;
+	color: #f05b41;
+	font-weight: normal;
+	font-size: 20px;
+	line-height: normal;
+	margin: 10px 0;
+	padding-bottom: 10px;
+}
+
+h1 {
+	width: 300px;
+	margin: 10px auto 30px;
+	font-weight: 200;
+	font-size: 30px;
+	text-transform: none;
+	color: #f05b41;
+}
+
+#birthday, #types, #without-future, #life-calendar-type {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#birthday {
+	width: 120px !important;
+}
+
+.form .checkbox {
+	margin: 10px 10px 10px 0;
+}
+
+.form .label {
+	margin-right: 10px;
+}
+
+.form #without-future {
+	margin-top: 0px;
+}
+
+.life-calendar-label {
+	position: absolute;
+	left: 900px;
+	text-transform: uppercase;
+	width: 180px;
+	font-weight: bold;
+	margin-top: -8px;
+}
+
+@media only screen and (max-width : 1280px) {
+	.left-period-label-container {
+		display: none;
+	}
+}
+
+.left-period-label-container {
+	position: absolute;
+	left: -350px;
+	width: 250px;
+}
+
+.life-calendar-left-period-label {
+	margin: 10px 0;
+	font-weight: bold;
+}
+
+#grid-container {
+	margin-top: 10px;
+	width: 100%;
+	border-bottom: 1px solid #a3a3a3;
+}
+
+#apply-button {
+	display: block;
+	margin-top: 50px;
+}
+
+.life-calendar {
+	margin: 10px auto;
+	width: 900px;
+	background-color: white;
+	position: relative;
+}
+
+.year {
+	height: 17px;
+}
+
+.year-tooltip {
+	position: absolute;
+	left: -92px;
+	color: #a3a3a3;
+}
+
+.brick-tooltip {
+	position: absolute;
+	top: -17px;
+}
+
+.brick {
+	display: inline-block;
+	margin: 3px 0 0 3px;
+	min-width: 14px;
+	min-height: 14px;
+	border: 1px solid #b9b9b9;
+}
+
+.important-brick {
+	border-color: #00f !important;
+	border-width: 2px !important;
+}
+
+.current-year .brick {
+	border: 1px solid #99d;
+}
+
+.current-year .year-tooltip {
+	color: #444;
+}
+
+.current-year:before {
+	content: '';
+	position: absolute;
+	left: -5px;
+	margin-top: 5px;
+	border: 5px solid transparent;
+	border-left: 6px solid #00f;
+}
+
+.current-year:after {
+	content: '';
+	position: absolute;
+	right: 8px;
+	margin-top: 5px;
+	border: 5px solid transparent;
+	border-right: 6px solid #00f;
+}
+
+.brick-popup ul {
+	padding: 0px;
+	list-style: none;
+}
+
+.brick-popup .brick {
+	vertical-align: baseline;
+}
+
+.brick-popup .brick-popup-button {
+	float: right;
+}
+
+.season-line {
+	position: absolute;
+	top: 3px;
+	left: 0px;
+	width: 1px;
+	height: 100%;
+	background: #d5d5d5;
+}
+
+.season-line-1 {
+	left: 154px;
+}
+
+.season-line-2 {
+	left: 375px;
+}
+
+.season-line-3 {
+	left: 596px;
+}
+
+.season-line-4 {
+	left: 817px;
+}
+
+.season-text {
+	position: absolute;
+	top: 850px;
+	left: 0px;
+	transform: rotate(-90deg);
+	font-size: 50px;
+	font-weight: 400;
+	color: #d5d5d5;
+	letter-spacing: 44px;
+	transform-origin: left top;
+}
+
+.season-text-1 {
+	left: 39px;
+}
+
+.season-text-2 {
+	left: 222px;
+}
+
+.season-text-3 {
+	left: 441px;
+}
+
+.season-text-4 {
+	left: 668px;
+}
+
+.season-text-5 {
+	left: 813px;
+}
+
+footer {
+	margin: 10px auto;
+	color: #959595;
+	text-align: center;
+}
+
+.auth-button {
+	float: right;
+	margin-top: 13px;
+	margin-right: 10px;
+	display: none;
+}
+
+.season-label {
+	position: absolute;
+	top: -20px;
+	color: #a3a3a3;
+}
+
+.signup-popup p:nth-child(n+2) {
+	margin-bottom: 5px;
+	margin-top: 15px;
+	margin-left: 2px;
+}
+
+.signup-popup .signup-button {
+	position: absolute;
+	bottom: 20px;
+	width: 100px;
+	margin-left: 0px;
+}
+
+.signup-popup .signup-button:nth-last-child(1) {
+	margin-left: 20px;
+	left: 120px;
+}
+
+.signup-popup .signup-button:nth-of-type(2) {
+	left: 120px;
+}
+
