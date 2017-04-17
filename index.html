@@ -17,6 +17,7 @@
 <body ng-controller='calendarCtrl'>
 	<div class="form">
 		<span class="auth-button" ng-class="{'show': isAuthorized == false}">Вы можете <a href="javascript:;" ng-click="signupAndLoadData()" >загрузить</a> ваши данные с сервера.</span>
+		<span class="auth-button" ng-class="{'show': isAuthorized == true}">Ваши данные синхронизируются с сервером.</span>
 		<h2 class="group-title">Жизненные периоды</h2>
 		<span>Дата рождения:</span>
 		<div id="birthday" dx-date-box="{
